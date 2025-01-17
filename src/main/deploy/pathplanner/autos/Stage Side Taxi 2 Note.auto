@@ -1,0 +1,105 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Stage Side Rotate"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "move arm to shoot speaker at sub"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "move arm to intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage Side Taxi 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage Side Taxi 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage Side Taxi 3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Stage Side Taxi 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "move arm to shoot speaker at sub"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake for 1 seconds"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage Side Taxi 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage Side Taxi 1"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "2024 Autos",
+  "choreoAuto": false
+}

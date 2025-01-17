@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Anti-fresta taxi 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Anti Festa 2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "2024 Autos",
+  "choreoAuto": false
+}
