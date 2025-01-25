@@ -3,8 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import com.pathplanner.lib.util.PIDConstants;
-import com.revrobotics.CANSparkBase.IdleMode;
+
+//import com.pathplanner.lib.util.PIDConstants;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 //import com.revrobotics.jni.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -53,9 +54,9 @@ public final class Constants {
   }
    public static final class AutonConstants
   {
-
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.02, 0, 0.0);
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+    ///important numbers
+    //public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.02, 0, 0.0);
+    //public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
   }
 
 
@@ -170,7 +171,7 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 6;
+    public static final double MAX_SPEED = 6;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     public static final double WHEEL_LOCK_TIME = 10;

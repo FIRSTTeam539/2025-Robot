@@ -1,11 +1,12 @@
 package frc.robot.subsystems.climber;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-import com.pathplanner.lib.util.PIDConstants;
-import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -17,17 +18,21 @@ import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends SubsystemBase{
 
-    private final CANSparkMax climbLeft = new CANSparkMax(ClimbConstants.kClimbSparkMaxCANIDLeft, MotorType.kBrushless);
-    private final CANSparkMax climbRight = new CANSparkMax(ClimbConstants.kClimbSparkMaxCANIDRight, MotorType.kBrushless);
+    private final SparkMax climbLeft = new SparkMax(ClimbConstants.kClimbSparkMaxCANIDLeft, MotorType.kBrushless);
+    private final SparkMax climbRight = new SparkMax(ClimbConstants.kClimbSparkMaxCANIDRight, MotorType.kBrushless);
+    private final SparkMaxConfig configRight = new SparkMaxConfig();
+    private final SparkMaxConfig configLeft = new SparkMaxConfig();
     private final RelativeEncoder LEncoder = climbLeft.getEncoder();
     private final RelativeEncoder REncoder = climbRight.getEncoder();
 
 
     public ClimbSubsystem(){
-        climbLeft.setIdleMode(IdleMode.kBrake);
-        climbRight.setIdleMode(IdleMode.kBrake);
-
-        climbLeft.setInverted(true);
+        configRight.idleMode(IdleMode.kBrake);
+        configLeft
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
+        climbLeft.configure(configLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        climbRight.configure(configRight, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //climbRight.follow(climbLeft, true);
         // l  307

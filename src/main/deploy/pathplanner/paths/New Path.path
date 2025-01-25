@@ -3,87 +3,93 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6058123547989605,
-        "y": 4.35248053625963
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4043831861248632,
-        "y": 3.2234666023161123
+        "x": 2.7111531260678707,
+        "y": 6.72848194080074
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.570621303284782,
-        "y": 3.049066075934594
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 2.5032975007917644,
-        "y": 2.8584725397751267
+        "x": 2.8745290020239684,
+        "y": 6.30902902326573
       },
       "nextControl": {
-        "x": 4.8556778134643945,
-        "y": 3.278540452752382
+        "x": 4.893057980639861,
+        "y": 5.75478636413279
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.635890694649217,
-        "y": 4.1230061594421406
+        "x": 6.805499999999999,
+        "y": 5.2145
       },
       "prevControl": {
-        "x": 5.134864724036358,
-        "y": 3.7578516384843543
+        "x": 6.150783591106191,
+        "y": 5.330375601774379
       },
       "nextControl": {
-        "x": 6.177450223934855,
-        "y": 4.517702087568438
+        "x": 7.051674146771992,
+        "y": 5.170930636209814
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.911768229751776,
-        "y": 5.279557018603494
+        "x": 6.805499999999999,
+        "y": 5.2145
       },
       "prevControl": {
-        "x": 6.471177426261624,
-        "y": 4.692102613949956
+        "x": 7.055159895317881,
+        "y": 5.201464024015653
       },
       "nextControl": {
-        "x": 7.549531978446256,
-        "y": 6.129908683529471
+        "x": 6.539231544071087,
+        "y": 5.228403190948867
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.288614490658505,
-        "y": 6.794087905600896
+        "x": 5.733,
+        "y": 2.1919999999999993
       },
       "prevControl": {
-        "x": 7.756233936441236,
-        "y": 6.6839402047283585
+        "x": 6.498499929710897,
+        "y": 3.552006725820041
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "anti-fresta endpoint 1"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.8,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 2.0,
+        "y": 3.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 3.4024813895781594,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -98,7 +104,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "2024 Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

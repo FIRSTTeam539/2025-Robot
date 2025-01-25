@@ -1,16 +1,18 @@
 package frc.robot.subsystems.arm;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import java.io.ObjectInputFilter.Config;
 
-import static com.revrobotics.SparkAbsoluteEncoder.Type.kDutyCycle;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -19,22 +21,28 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeSubsystem extends SubsystemBase{
-    private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kIntakeSparkMaxCANID, MotorType.kBrushless);
-    private final CANSparkMax shooterLeader = new CANSparkMax(IntakeConstants.kShooterSparkMaxCANID1, MotorType.kBrushless);
-    private final CANSparkMax shooterFollower = new CANSparkMax(IntakeConstants.kShooterSparkMaxCANID2, MotorType.kBrushless);
-    //private final SparkAbsoluteEncoder shooterncoder = shooterLeader.getAbsoluteEncoder(kDutyCycle);
-    //private final Encoder shooterEnc = new Encoder(IntakeConstants.kIntakeEncoderID[0], IntakeConstants.kIntakeEncoderID[1], IntakeConstants.kEncoderDirectionReversed);
+    private final SparkMax intakeMotor = new SparkMax(IntakeConstants.kIntakeSparkMaxCANID, MotorType.kBrushless);
+    private final SparkMax shooterLeader = new SparkMax(IntakeConstants.kShooterSparkMaxCANID1, MotorType.kBrushless);
+    private final SparkMax shooterFollower = new SparkMax(IntakeConstants.kShooterSparkMaxCANID2, MotorType.kBrushless);
+    private final SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    private final SparkMaxConfig shooterLeaderConfig = new SparkMaxConfig();
+    private final SparkMaxConfig shooterFollowerConfig = new SparkMaxConfig();
     // Initializes a DigitalInput on DIO 1
-    private final DigitalInput beamBreakSensor = new DigitalInput(IntakeConstants.kBeamBreakSensorId);
+    //private final DigitalInput beamBreakSensor = new DigitalInput(IntakeConstants.kBeamBreakSensorId);
 
     public IntakeSubsystem(){
-        intakeMotor.setIdleMode(IdleMode.kBrake);
-        shooterLeader.setIdleMode(IdleMode.kBrake);
-        shooterFollower.setIdleMode(IdleMode.kBrake);
+        intakeConfig
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
+        shooterLeaderConfig
+            .idleMode(IdleMode.kBrake);
+        shooterFollowerConfig
+            .idleMode(IdleMode.kBrake)
+            .follow(shooterLeader, false);
 
-        intakeMotor.setInverted(true);
-
-        shooterFollower.follow(shooterLeader, false);
+        intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterLeader.configure(shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterFollower.configure(shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //shooterEnc.reset();
         //shooterEnc.setDistancePerPulse(IntakeConstants.kShooterDistancePerPulse/2048);
@@ -43,8 +51,8 @@ public class IntakeSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("game piece", getGamePiecePresent());
-        SmartDashboard.putBoolean("beam break test",beamBreakSensor.get());
+        //SmartDashboard.putBoolean("game piece", getGamePiecePresent());
+        //SmartDashboard.putBoolean("beam break test",beamBreakSensor.get());
         // TODO Auto-generated method stub
         //super.periodic();
         //SmartDashboard.putNumber("shooter encoder", getShooterSpeed());
@@ -53,9 +61,9 @@ public class IntakeSubsystem extends SubsystemBase{
     /*public double getShooterSpeed(){
         return shooterEnc.getRate();
     }*/
-    public boolean getGamePiecePresent(){
+    /*public boolean getGamePiecePresent(){
         return !beamBreakSensor.get();
-    }
+    }*/
     public void setIntakeSpeed(double speed){
         intakeMotor.set(speed);
     }

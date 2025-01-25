@@ -4,11 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -18,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
-import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.subsystems.climber.ClimbSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -40,6 +36,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.pathplanner.lib.auto.NamedCommands;
+import swervelib.SwerveInputStream;
 
 import java.util.List;
 
@@ -59,12 +56,20 @@ public class RobotContainer {
   private final LimelightSubsystem m_robotLimelight = new LimelightSubsystem("limelight");
     
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  
   // The driver's controller
   CommandXboxController m_driverController0 = new CommandXboxController(OIConstants.kDriverControllerPort0);
   CommandXboxController m_driverController1 = new CommandXboxController(OIConstants.kDriverControllerPort1);
   //Command turnToAprilTagCommand = new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight);
   //SequentialCommandGroup x = new SequentialCommandGroup(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight), m_robotArm.moveToPositionCommand());
-  
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_robotDrive.getSwerveDrive(),
+    () -> m_driverController0.getLeftY(),
+    () -> m_driverController0.getLeftX())
+    .withControllerRotationAxis(m_driverController0::getRightX)
+    .deadband(0.17)
+    .scaleTranslation(
+      0.8)
+    .allianceRelativeControl(true);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -83,7 +88,7 @@ public class RobotContainer {
     
     // Configure default commands
     
-    TeleopDrive teleopDrive = new TeleopDrive(m_robotDrive, 
+    /*TeleopDrive teleopDrive = new TeleopDrive(m_robotDrive, 
       (()->-MathUtil.applyDeadband(m_driverController0.getLeftY(), OIConstants.LEFT_Y_DEADBAND_1)*(OIConstants.kDefaultDriveSpeed+
       OIConstants.kDriveSpeedIncreaseConstant*MathUtil.applyDeadband(m_driverController0.getRightTriggerAxis(), OIConstants.RIGHT_TRIGGER_DEADBAND_1))), 
       (()->-MathUtil.applyDeadband(m_driverController0.getLeftX(), OIConstants.LEFT_X_DEADBAND_1)*(OIConstants.kDefaultDriveSpeed+
@@ -91,12 +96,14 @@ public class RobotContainer {
       (()->-MathUtil.applyDeadband(
       m_driverController0.getRightX(), OIConstants.RIGHT_X_DEADBAND_1)*(OIConstants.kDefaultDriveSpeed+
       OIConstants.kDriveSpeedIncreaseConstant*m_driverController0.getRightTriggerAxis())), 
-      ()->true);
-        AbsoluteDrive absoluteDrive = new AbsoluteDrive(m_robotDrive, 
+      ()->true);*/
+      
+
+      /*AbsoluteDrive absoluteDrive = new AbsoluteDrive(m_robotDrive, 
       ()->MathUtil.applyDeadband(-m_driverController0.getLeftY(), 0.1)*0.7,
       ()->MathUtil.applyDeadband(-m_driverController0.getLeftX(), 0.1)*0.7,
       ()->MathUtil.applyDeadband(-m_driverController0.getRightY(), 0.1)*0.7,
-      ()->MathUtil.applyDeadband(-m_driverController0.getRightX(), 0.1)*0.7);
+      ()->MathUtil.applyDeadband(-m_driverController0.getRightX(), 0.1)*0.7);*/
       
     /*TeleopDrive simClosedFieldRel = new TeleopDrive(m_robotDrive,
       (()->MathUtil.applyDeadband(m_driverController0.getLeftY(), OIConstants.LEFT_Y_DEADBAND_1)), 
@@ -105,7 +112,6 @@ public class RobotContainer {
       ()->true);*/
   
     //m_robotDrive.setDefaultCommand(!RobotBase.isSimulation() ? teleopDrive : simClosedFieldRel);
-    m_robotDrive.setDefaultCommand(teleopDrive);
    /* m_robotClimb.setDefaultCommand(Commands.run(()->m_robotClimb.setDualClimb(MathUtil.applyDeadband(m_driverController1.getLeftY(), 0.2), MathUtil.applyDeadband(m_driverController1.getRightY(), 0.2)), m_robotClimb)); // works
     m_robotArm.setDefaultCommand(Commands.run(()->m_robotArm.setArmVelocity(MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.1)-MathUtil.applyDeadband(m_driverController1.getLeftTriggerAxis(),0.1)),m_robotArm));
 
@@ -151,7 +157,9 @@ public class RobotContainer {
     m_driverController0.x().whileTrue(Commands.run(() -> m_robotDrive.lock())); 
     m_driverController0.y().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
     m_driverController0.rightBumper().whileTrue(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight, 2));
-    /*m_driverController0.leftBumper().whileTrue(m_robotArm.moveToPosCommand(0.1));
+    Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
+    m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    /*m_driverController0.leftBumper().whileTrue(m_robotArm.moveToPosCommand(0.1));drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     m_driverController0.rightBumper().whileTrue(m_robotArm.moveToPosCommand(Math.PI/3));
     
     //m_driverController1.leftBumper().whileTrue(Commands.run(()->m_robotClimb.setDualClimb(MathUtil.applyDeadband(m_driverController1.getLeftY(), 0.2), MathUtil.applyDeadband(m_driverController1.getRightY(), 0.2)*0.6), m_robotClimb));

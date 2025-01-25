@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1845960673053426,
-        "y": 1.2040920863195774
+        "x": 2.184596067305343,
+        "y": 1.204092086319577
       },
       "isLocked": false,
       "linkedName": "Stage side rotated"
@@ -20,7 +20,7 @@
         "y": 0.7635012828294246
       },
       "prevControl": {
-        "x": 1.8082580893241689,
+        "x": 1.808258089324168,
         "y": 0.8185751332656941
       },
       "nextControl": null,
@@ -33,10 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.36,
-    "maxAcceleration": 4.0,
-    "maxAngularVelocity": 330.0,
-    "maxAngularAcceleration": 350.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
