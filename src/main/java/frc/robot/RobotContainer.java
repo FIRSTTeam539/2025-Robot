@@ -19,9 +19,10 @@ import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 import frc.robot.subsystems.climber.ClimbSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.Elavator.ArmSubsystem;
+import frc.robot.subsystems.Elavator.IntakeSubsystem;
 import frc.robot.utils.utils;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.arm.IntakeSubsystem;
+
 import java.io.File;
 import edu.wpi.first.wpilibj2.command.Commands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -159,6 +160,7 @@ public class RobotContainer {
     m_driverController0.rightBumper().whileTrue(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight, 2));
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
     m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+      ller0.button(1).onTrue(Commands.run(()->SmartDashboard.putBoolean("yay!", false)));
     /*m_driverController0.leftBumper().whileTrue(m_robotArm.moveToPosCommand(0.1));drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     m_driverController0.rightBumper().whileTrue(m_robotArm.moveToPosCommand(Math.PI/3));
     

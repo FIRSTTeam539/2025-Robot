@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.Elavator;
 
 //Spencer Anthony wrote this code
 import com.revrobotics.spark.SparkMax;
@@ -34,7 +34,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.controller.ArmFeedforward;
 
 
-
+// for refrence; not currently in use
 public class ArmSubsystem extends SubsystemBase{
     private final int SMART_MOTION_SLOT = 0;
       // Offset in rotations to add to encoder value - offset from arm horizontal to sensor zero
