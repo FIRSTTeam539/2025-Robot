@@ -53,10 +53,38 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 2;
   }
    public static final class AutonConstants
-  {
+  { // DO NOT DELTE (until this numbers are ut into the new auto PID and tuned)
     ///important numbers
     //public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.02, 0, 0.0);
     //public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+  }
+
+  public static class Elevator {
+    public static final int kElevatorLeftMotorId = 10;
+    public static final int kElevatorRightMotorId = 9;
+
+    public static final double kP = 0.2;
+    public static final double kI = 0;
+    public static final double kD = 0.0;
+    public static final double kIZone = 5.0;
+    public static final double kG = 1;
+
+    public static final double kMaxVelocity = 65;
+    public static final double kMaxAcceleration = 200;
+
+    public static final int kMaxCurrent = 40;
+    public static final double kMaxPowerUp = -0.3;
+    public static final double kMaxPowerDown = 0.3;
+
+    public static final double kStowHeight = 0.0;
+    public static final double kL2Height = 9.0;
+    public static final double kL3Height = 25.14;
+    public static final double kL4Height = 55.0;
+    public static final double kMaxHeight = 56.2;
+    public static final double kGroundAlgaeHeight = 0.0;
+    public static final double kScoreAlgaeHeight = 0.0;
+    public static final double kLowAlgaeHeight = 24.8;
+    public static final double kHighAlgaeHeight = 42.5;
   }
 
 

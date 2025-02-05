@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elavator;
+package frc.robot.subsystems.Elevator;
 
 //Spencer Anthony wrote this code
 import com.revrobotics.spark.SparkMax;

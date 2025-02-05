@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elavator;
+package frc.robot.subsystems.Elevator;
 
 import java.io.ObjectInputFilter.Config;
 
@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
+// for old 2024 intake
 public class IntakeSubsystem extends SubsystemBase{
     private final SparkMax intakeMotor = new SparkMax(IntakeConstants.kIntakeSparkMaxCANID, MotorType.kBrushless);
     private final SparkMax shooterLeader = new SparkMax(IntakeConstants.kShooterSparkMaxCANID1, MotorType.kBrushless);

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elavator;
+package frc.robot.subsystems.Elevator;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -72,37 +72,37 @@ public class ElevatorSubsystem extends SubsystemBase {
    private TrapezoidProfile.State mGoalState = new TrapezoidProfile.State();
    private double prevUpdateTime = Timer.getFPGATimestamp();
  
-   private ElevatorSubsystem() {
+   public ElevatorSubsystem() {
  
      mPeriodicIO = new PeriodicIO();
  
      SparkMaxConfig elevatorConfig = new SparkMaxConfig();
  
-     elevatorConfig.closedLoop
+     elevatorConfig.closedLoop // invert Down/up (switch them or get negative of line 164
          .pid(Constants.Elevator.kP, Constants.Elevator.kI, Constants.Elevator.kD)
          .iZone(Constants.Elevator.kIZone)
-         .minOutput(Constants.Elevator.kMaxPowerDown)
-         .maxOutput(Constants.Elevator.kMaxPowerUp);
+         .maxOutput(Constants.Elevator.kMaxPowerDown) //maybe switch to be max power up
+         .minOutput(Constants.Elevator.kMaxPowerUp); // maybe switch to max power down
  
      elevatorConfig.smartCurrentLimit(Constants.Elevator.kMaxCurrent);
  
      elevatorConfig.idleMode(IdleMode.kBrake);
- 
+    
+     // RIGHT ELEVATOR MOTOR
+    mRightMotor = new SparkMax(Constants.Elevator.kElevatorRightMotorId, MotorType.kBrushless);
+    mRightEncoder = mRightMotor.getEncoder();
+    mRightPIDController = mRightMotor.getClosedLoopController();
+    mRightMotor.configure(
+        elevatorConfig,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+
      // LEFT ELEVATOR MOTOR
      mLeftMotor = new SparkMax(Constants.Elevator.kElevatorLeftMotorId, MotorType.kBrushless);
      mLeftEncoder = mLeftMotor.getEncoder();
      mLeftPIDController = mLeftMotor.getClosedLoopController();
      mLeftMotor.configure(
-         elevatorConfig,
-         ResetMode.kResetSafeParameters,
-         PersistMode.kPersistParameters);
- 
-     // RIGHT ELEVATOR MOTOR
-     mRightMotor = new SparkMax(Constants.Elevator.kElevatorRightMotorId, MotorType.kBrushless);
-     mRightEncoder = mRightMotor.getEncoder();
-     mRightPIDController = mRightMotor.getClosedLoopController();
-     mRightMotor.configure(
-         elevatorConfig.follow(mLeftMotor),
+         elevatorConfig.follow(mRightMotor),
          ResetMode.kResetSafeParameters,
          PersistMode.kPersistParameters);
  
@@ -135,6 +135,10 @@ public class ElevatorSubsystem extends SubsystemBase {
  
    @Override
    public void periodic() {
+    SmartDashboard.putNumber("Elevator/Speed Target", mPeriodicIO.elevator_target);
+    SmartDashboard.putNumber("Elevator/Position/Current", mRightEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator/Position/Target", mPeriodicIO.elevator_target);
+    writePeriodicOutputs();
      // TODO: Use this pattern to only drive slowly when we're really high up
      // if(mPivotEncoder.getPosition() > Constants.kPivotScoreCount) {
      // mPeriodicIO.is_pivot_low = true;
@@ -156,16 +160,16 @@ public class ElevatorSubsystem extends SubsystemBase {
        mCurState = mProfile.calculate(dt, mCurState, mGoalState);
  
        // Set PID controller to new state
-       mLeftPIDController.setReference(
+       mRightPIDController.setReference(
            mCurState.position,
            SparkBase.ControlType.kPosition,
            ClosedLoopSlot.kSlot0,
            Constants.Elevator.kG,
            ArbFFUnits.kVoltage);
      } else {
-       mCurState.position = mLeftEncoder.getPosition();
+       mCurState.position = mRightEncoder.getPosition();
        mCurState.velocity = 0;
-       mLeftMotor.set(mPeriodicIO.elevator_power);
+       mRightMotor.set(mPeriodicIO.elevator_power);
      }
    }
  
@@ -173,20 +177,22 @@ public class ElevatorSubsystem extends SubsystemBase {
      mPeriodicIO.is_elevator_pos_control = false;
      mPeriodicIO.elevator_power = 0.0;
  
-     mLeftMotor.set(0.0);
+     mRightMotor.set(0.0);
    }
  
    
    public void outputTelemetry() {
-     SmartDashboard.putNumber("Position/Current", mLeftEncoder.getPosition());
+
+     SmartDashboard.putNumber("Position/Current", mRightEncoder.getPosition());
      SmartDashboard.putNumber("Position/Target", mPeriodicIO.elevator_target);
-     SmartDashboard.putNumber("Velocity/Current", mLeftEncoder.getVelocity());
+     SmartDashboard.putNumber("Velocity/Current", mRightEncoder.getVelocity());
  
      SmartDashboard.putNumber("Position/Setpoint", mCurState.position);
      SmartDashboard.putNumber("Velocity/Setpoint", mCurState.velocity);
  
      SmartDashboard.putNumber("Current/Left", mLeftMotor.getOutputCurrent());
      SmartDashboard.putNumber("Current/Right", mRightMotor.getOutputCurrent());
+     SmartDashboard.putNumber("elevator power", mPeriodicIO.elevator_power);
  
      SmartDashboard.putNumber("Output/Left", mLeftMotor.getAppliedOutput());
      SmartDashboard.putNumber("Output/Right", mRightMotor.getAppliedOutput());
@@ -195,7 +201,7 @@ public class ElevatorSubsystem extends SubsystemBase {
    }
 
    public void reset() {
-     mLeftEncoder.setPosition(0.0);
+     mRightEncoder.setPosition(0.0);
    }
  
    /*---------------------------------- Custom Public Functions ----------------------------------*/
