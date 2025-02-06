@@ -5,7 +5,7 @@
 package frc.robot;
 
 //import com.pathplanner.lib.util.PIDConstants;
-import om.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 //import com.revrobotics.jni.CANSparkMax.IdleMode;
 
@@ -56,8 +56,8 @@ public final class Constants {
    public static final class AutonConstants
   { // DO NOT DELTE (until this numbers are ut into the new auto PID and tuned)
     ///important numbers
-    //public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.02, 0, 0.0);
-    //public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.02, 0, 0.0);
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
   }
 
   public static class Elevator {

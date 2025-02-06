@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side Rotate"
+                  "pathName": null
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side New 1"
+                  "pathName": null
                 }
               },
               {
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side New 1"
+                  "pathName": null
                 }
               },
               {
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Stage Side New 2"
+            "pathName": null
           }
         },
         {
@@ -80,7 +80,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side New 3"
+                  "pathName": null
                 }
               },
               {
@@ -99,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side Taxi 4"
+                  "pathName": null
                 }
               },
               {
@@ -114,7 +114,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Stage Side Taxi 5"
+            "pathName": null
           }
         },
         {
@@ -126,7 +126,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Stage Side Taxi 1"
+            "pathName": null
           }
         }
       ]

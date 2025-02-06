@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp Side 1"
+            "pathName": null
           }
         },
         {
@@ -55,13 +55,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "amp side to middle"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Center 1.5"
+            "pathName": null
           }
         }
       ]

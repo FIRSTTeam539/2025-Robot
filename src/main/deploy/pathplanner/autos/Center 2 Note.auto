@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center 1"
+            "pathName": null
           }
         },
         {
@@ -35,7 +35,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center 1.5"
+                  "pathName": null
                 }
               },
               {

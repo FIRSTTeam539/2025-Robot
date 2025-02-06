@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.288614490658505,
-        "y": 6.794087905600896
+        "x": 5.528250000000001,
+        "y": 6.101749999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.279435515585794,
-        "y": 8.180113141580335
+        "x": 5.40325,
+        "y": 5.88524364905389
       },
       "isLocked": false,
-      "linkedName": "anti-fresta endpoint 1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.288614490662846,
-        "y": 0.6717115321023099
+        "x": 5.06025,
+        "y": 5.3315
       },
       "prevControl": {
-        "x": 8.26107756544037,
-        "y": 2.0026629176454804
+        "x": 5.18525,
+        "y": 5.5480063509461095
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "2024 Paths",
+  "folder": "Score Line Up",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

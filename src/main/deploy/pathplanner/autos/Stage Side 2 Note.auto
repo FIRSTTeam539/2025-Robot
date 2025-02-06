@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side Rotate"
+                  "pathName": null
                 }
               },
               {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Stage Side 1"
+            "pathName": null
           }
         },
         {
@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Stage Side 2"
+                  "pathName": null
                 }
               },
               {

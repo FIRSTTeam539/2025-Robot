@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7802128811804795,
-        "y": 4.39
+        "x": 2.8275,
+        "y": 4.1907499999999995
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.184596067305343,
-        "y": 1.204092086319577
+        "x": 3.8275000000000006,
+        "y": 4.1907499999999995
       },
       "isLocked": false,
-      "linkedName": "Stage side rotated"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.84700712131724,
-        "y": 0.7635012828294246
+        "x": 3.0517499999999997,
+        "y": 4.1907499999999995
       },
       "prevControl": {
-        "x": 1.808258089324168,
-        "y": 0.8185751332656941
+        "x": 2.0517499999999997,
+        "y": 4.1907499999999995
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "stage side taxi 1 endpoint"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,11 +41,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 0,
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "2024 Paths",
+  "folder": "Score Line Up",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

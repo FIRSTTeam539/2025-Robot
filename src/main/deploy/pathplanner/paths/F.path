@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.73,
-        "y": 4.380017461477765
+        "x": 5.70375,
+        "y": 2.2602499999999996
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.73,
-        "y": 4.380017461477765
-      },
-      "isLocked": false,
-      "linkedName": "stage side note 1 endpoint"
-    },
-    {
-      "anchor": {
-        "x": 1.5328888371428244,
-        "y": 4.627849788440976
-      },
-      "prevControl": {
-        "x": 1.1352750023530451,
-        "y": 4.283967552946391
-      },
-      "nextControl": {
-        "x": 1.8725109148324395,
-        "y": 4.921576990767745
+        "x": 5.57875,
+        "y": 2.476756350946108
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8633319397604393,
-        "y": 5.481494470203146
+        "x": 5.3527499999999995,
+        "y": 2.90375
       },
       "prevControl": {
-        "x": 1.9184057901967082,
-        "y": 4.90321904062232
+        "x": 5.4777499999999995,
+        "y": 2.6872436490538907
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "stage side 2 endpoint"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -58,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "2024 Paths",
+  "folder": "Score Line Up",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }
