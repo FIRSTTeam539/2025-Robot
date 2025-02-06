@@ -20,8 +20,6 @@ import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 import frc.robot.subsystems.climber.ClimbSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.Elevator.ArmSubsystem;
-import frc.robot.subsystems.Elevator.IntakeSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 
 import frc.robot.utils.utils;
@@ -35,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
-import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

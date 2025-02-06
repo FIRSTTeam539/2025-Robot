@@ -88,81 +88,61 @@ public final class Constants {
   }
 
 
-  public static final class ArmConstants{
-    public static final int kArmSparkMaxCANID1 = 15; // reconfigure to actual values
-    public static final int kArmSparkMaxCANID2 = 16;//set to value
-    public static final int kEncoderID = 0; //adjust to actual value
+  public static class Coral {
+    public static final int kLeftMotorId = 11;
+    public static final int kRightMotorId = 12;
 
-    public static final double kSVolts = 0; //smallest value to make arm move miscule amount - static movment amount
-    public static final double kGVolts = 0;
-    public static final double kVVoltSecondPerRad =0;
-    public static final double kAVoltSecondSquaredPerRad = 0;
+    public static final int kLaserId = 0;
+    public static final int kColorId = 16;
 
-    public static final double kArmOffsetRads = 0.08;
+    public static final double kMaxCurrent = 20;
 
-    public static final double kP = 0.8;
-
-
-    /*
-    public static final double kI = 1e-6;
-    public static final double kD = 0;
-    public static final double kF = 0;
-    public static final double kIz = 0;
-    public static final double kFF = 1.00;*/
-
-    public static final double holdArmPower = 0.085;
-
-
-    public static final double kMinOutput = -1;
-    public static final double kMaxOutput = 1;
-    public static final double maxRPM = 5700;
-    public static final double maxVel = 2000;
-    public static final double minVel = -2000;
-    public static final double maxAcc = 1500;
-    public static final double kMaxVelocityRadPerSecond =10; //set latter
-    public static final double kMaxAccelerationRadPerSecSquared = 275;
-    public static final double allowedErr= Units.degreesToRadians(5);//change
-
-    public static final double ENCODER_OFFSET = 0.08d;
-    //public static final double GRAVITY_FF = 0.01;
-    public static final float LIMIT_BOTTOM = 0f;
-    public static final float LIMIT_TOP = (float) (2*Math.PI);
-
-    public static final double kEncoderDistancePerRotation = 2*Math.PI; // give us 2 rad per rotation
-
-
-    public static final double kArmRate = 0.5;
-
-    //min/ max value of arm
-    public static final double kMaxDownSpeed= -0.5;
-    public static final double kMaxUpSpeed= 0.5;
-    public static final double kMaxUpPos = 1.82;
-    public static final double kMaxDownPos = 0.004;
-    //set value of deadzone
-
-
-  //move arm power
-  public static final double ARM_OUTPUT_POWER = 0.7;
-  } 
-
-  public static final class IntakeConstants{
-    public static final int kIntakeSparkMaxCANID = 17; //change to actual value
-    public static final int kShooterSparkMaxCANID1 = 18; 
-    public static final int kShooterSparkMaxCANID2 = 19;
-
-    //public static final int[] kIntakeEncoderID = {1,2};
-    public static final boolean kEncoderDirectionReversed = false;
-    public static final  CounterBase.EncodingType kEncoderDecodingType = Encoder.EncodingType.k4X; 
-    public static final double shooterWheelRadius = Units.inchesToMeters(2); //in meter per seconds
-    public static final double kShooterDistancePerPulse = 2*Math.PI*shooterWheelRadius; // in meters
-
-    public static int kBeamBreakSensorId = 2;
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kIZone = 0;
 
     public static final double kIntakeSpeed = 0.3;
-    public static final double kShooterSpeedSpeaker = 0.95;
-    public static final double kShooterSpeedAmp = 0.6;
-    //public static final double kMaxShooterSpeedMetersPerSecond = 0.5;
+    public static final double kReverseSpeed = -0.3;
+    public static final double kL1Speed = 0.4;
+    public static final double kL24Speed = 0.4;
+    public static final double kIndexSpeed = 0.1;
+    public static final double kSpeedDifference = kL1Speed * 0.5;
+  }
 
+  public static class Algae {
+    // WRIST
+    public static final int kWristMotorId = 13;
+    public static final int kIntakeMotorId = 14;
+
+    public static final int kWristEncoderId = 9;
+
+    public static final int kMaxWristCurrent = 10;
+
+    public static final double kWristP = 0.01;
+    public static final double kWristI = 0.0;
+    public static final double kWristD = 0.0;
+
+    public static final double kWristKS = 0.0;
+    public static final double kWristKG = 0.0;
+    public static final double kWristKV = 0.100;
+    public static final double kWristKA = 0.0;
+
+    public static final double kWristOffset = 141.0;
+
+    public static final double kWristMaxVelocity = 690.0;
+    public static final double kWristMaxAcceleration = 1380.0;
+
+    public static final double kStowAngle = 233.0;
+    public static final double kDeAlgaeAngle = 215.0;
+    public static final double kGroundIntakeAngle = 162.0;
+
+    // INTAKE
+    public static final int kMaxIntakeCurrent = 20;
+
+    public static final double kIntakeSpeed = 0.6;
+    public static final double kEjectSpeed = -0.3;
+    public static final double kGroundIntakeSpeed = -0.3;
   }
 
   public static final class ClimbConstants {
@@ -171,7 +151,49 @@ public final class Constants {
 
     public static final double kStaticArmRate = 0;
   }
+  public static class LEDs {
+    public static final int k_PWMId = 9;
+    public static final int k_totalLength = 300;
+  }
 
+  public static final class DriveConstants {
+    // Driving Parameters - Note that these are not the maximum capable speeds of
+    // the robot, rather the allowed maximum speeds
+    public static final double MAX_SPEED = 6;
+    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+
+    public static final double WHEEL_LOCK_TIME = 10;
+
+    public static final double kDirectionSlewRate = 1.2; // radians per second
+    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+
+    // Chassis configuration
+    public static final double kTrackWidth = Units.inchesToMeters(24);
+    // Distance between centers of right and left wheels on robot
+    public static final double kWheelBase = Units.inchesToMeters(24);
+
+    public static final double APRILTAG_X_TOLERANCE = 1.5;
+    public static final double APRILTAG_Y_TOLERANCE = 0.5;
+    public static final double APRILTAG_ROTATION_TOLERANCE = .025; // Radians
+    public static final double APRILTAG_TY_MAGIC_OFFSET = 12.5;
+
+    public static final double AMP_TX_SETPOINT = 0;
+    public static final double AMP_TY_SETPOINT = -10;
+    public static final double AMP_ROTATION_SETPOINT = Math.PI / 2;
+    public static final double AUTO_TRANSLATE_DEBOUNCE_SECONDS = 0.1;
+
+    public static final double kPAprilTag = 0.07;
+
+  }
+  public static final class LimelightConstants{
+    public static final double forward = 0;
+    public static final double side = 0;
+    public static final double up = 0;
+    public static final double pitch = 0;
+    public static final double roll = 0;
+    public static final double yaw = 0; 
+  }
   public static final class SHOOTER_LIMELIGHT {
     public static final String NAME = "limelight-shooter";
 
@@ -196,81 +218,6 @@ public final class Constants {
     public static final double TARGET_HEIGHT_FROM_FLOOR = 0.0;
   }
 
-  public static final class DriveConstants {
-    // Driving Parameters - Note that these are not the maximum capable speeds of
-    // the robot, rather the allowed maximum speeds
-    public static final double MAX_SPEED = 6;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
-
-    public static final double WHEEL_LOCK_TIME = 10;
-
-    public static final double kDirectionSlewRate = 1.2; // radians per second
-    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
-    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
-
-    // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(24);
-    // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(24);
-
-    //public static final double allowedAutoAimErrorRadians = Units.degreesToRadians(0.1);
-
-
-
-    //drive to abriltag
-    public static final PIDController APRILTAG_ROTATION_PID_CONTROLLER =
-        new PIDController(3, 0, 0.01);
-    public static final PIDController APRILTAG_X_TRANSLATION_PID_CONTROLLER =
-        new PIDController(0.05, 0, 0);
-    public static final PIDController APRILTAG_Y_TRANSLATION_PID_CONTROLLER =
-        new PIDController(0.2, 0, 0);
-
-    public static final double APRILTAG_X_TOLERANCE = 1.5;
-    public static final double APRILTAG_Y_TOLERANCE = 0.5;
-    public static final double APRILTAG_ROTATION_TOLERANCE = .025; // Radians
-    public static final double APRILTAG_TY_MAGIC_OFFSET = 12.5;
-
-    public static final double AMP_TX_SETPOINT = 0;
-    public static final double AMP_TY_SETPOINT = -10;
-    public static final double AMP_ROTATION_SETPOINT = Math.PI / 2;
-    public static final double AUTO_TRANSLATE_DEBOUNCE_SECONDS = 0.1;
-
-    public static final double kPAprilTag = 0.07;
-
-  }
-  public static final class LimelightConstants{
-    public static final double forward = 0;
-    public static final double side = 0;
-    public static final double up = 0;
-    public static final double pitch = 0;
-    public static final double roll = 0;
-    public static final double yaw = 0; 
-  }
-
-  /*public static final class ModuleConstants {
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
-    // This changes the drive speed of the module (a pinion gear with more teeth will result in a
-    // robot that drives faster).
-
-    // Invert the turning encoder, since the output shaft rotates in the opposite direction of
-    // the steering motor in the MAXSwerve Module.
-    public static final boolean kTurningEncoderInverted = true;
-
-    // Calculations required for driving motor conversion factors and feed forward
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-    public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
-
-    public static final IdleMode kDrivingMotorIdleMode = IdleMode.kBrake;
-    public static final IdleMode kTurningMotorIdleMode = IdleMode.kBrake;
-
-    public static final int kDrivingMotorCurrentLimit = 50; // amps
-    public static final int kTurningMotorCurrentLimit = 20; // amps
-  }*/
-
-  /**
-   * 
-   */
   public static final class OIConstants {
     public static final int kDriverControllerPort0 = 0;
     public static final int kDriverControllerPort1 = 1;

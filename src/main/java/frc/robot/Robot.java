@@ -11,6 +11,9 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import java.io.File;
 import java.io.IOException;
 import swervelib.parser.SwerveParser;
@@ -52,6 +55,7 @@ public class Robot extends TimedRobot
     for (int port = 5800; port <=5707; port++){
       PortForwarder.add(port, "limelight.local", port);
     }
+    PathfindingCommand.warmupCommand().schedule();
 
     //CameraServer.startAutomaticCapture(0);
     //CameraServer.startAutomaticCapture(1);
