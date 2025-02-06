@@ -55,6 +55,7 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import frc.robot.Constants.AutonConstants;
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -190,9 +191,9 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),//need to fix
+              AutonConstants.TRANSLATION_PID,
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              AutonConstants.ANGLE_PID
               // Rotation PID constants
           ),
           config,
@@ -223,31 +224,7 @@ public class SwerveSubsystem extends SubsystemBase
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
   }
-
-//  /**
-//   * Aim the robot at the target returned by PhotonVision.
-//   *
-//   * @return A {@link Command} which will run the alignment.
-//   */
-//  public Command aimAtTarget(Cameras camera)
-//  {
-//
-//    return run(() -> {
-//      Optional<PhotonPipelineResult> resultO = camera.getBestResult();
-//      if (resultO.isPresent())
-//      {
-//        var result = resultO.get();
-//        if (result.hasTargets())
-//        {
-//          drive(getTargetSpeeds(0,
-//                                0,
-//                                Rotation2d.fromDegrees(result.getBestTarget()
-//                                                             .getYaw()))); // Not sure if this will work, more math may be required.
-//        }
-//      }
-//    });
-//  }
-
+  
   /**
    * Get the path follower with events.
    *

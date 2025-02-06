@@ -17,7 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 
+//for old climb system
 import frc.robot.subsystems.climber.ClimbSubsystem;
+
+//modern subsystems
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;

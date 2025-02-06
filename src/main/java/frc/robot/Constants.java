@@ -5,6 +5,7 @@
 package frc.robot;
 
 //import com.pathplanner.lib.util.PIDConstants;
+import om.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 //import com.revrobotics.jni.CANSparkMax.IdleMode;
 
