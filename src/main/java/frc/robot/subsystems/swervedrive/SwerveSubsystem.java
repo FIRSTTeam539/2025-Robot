@@ -19,6 +19,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -57,6 +58,17 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import frc.robot.Constants.AutonConstants;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
+import frc.robot.LimelightHelpers;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import frc.robot.Constants.LimelightConstants;
+import edu.wpi.first.units.AngularVelocityUnit;
+
 public class SwerveSubsystem extends SubsystemBase
 {
 
@@ -72,6 +84,10 @@ public class SwerveSubsystem extends SubsystemBase
    * Enable vision odometry updates while driving.
    */
   private final boolean             visionDriveTest     = false;
+
+  private final NetworkTable limelightNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
+  
+  boolean doRejectUpdate;
   /**
    * PhotonVision class to keep an accurate odometry.
    */
@@ -111,6 +127,9 @@ public class SwerveSubsystem extends SubsystemBase
 //      setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
+      limelightNetworkTable.getEntry("snapshot").setDouble(0.0);
+      LimelightHelpers.setCameraPose_RobotSpace("limelight", LimelightConstants.forward, LimelightConstants.side,
+        LimelightConstants.up, LimelightConstants.roll, LimelightConstants.pitch, LimelightConstants.yaw);
     }
     setupPathPlanner();
   }
@@ -145,6 +164,25 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
+      
+      LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getOdometryHeading().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+      if(Math.abs(swerveDrive.getGyro().getYawAngularVelocity().baseUnitMagnitude()) > 720) {// if our angular velocity is greater than 720 degrees per second, ignore vision updates
+      
+        doRejectUpdate = true;
+      }
+      if(mt2.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+      if(!doRejectUpdate)
+      {
+        swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(LimelightConstants.XStDevs,LimelightConstants.YStDevs,9999999));
+        swerveDrive.addVisionMeasurement(
+            mt2.pose,
+            mt2.timestampSeconds);
+      }
 //      vision.updatePoseEstimation(swerveDrive);
     }
   }

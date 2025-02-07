@@ -193,30 +193,10 @@ public final class Constants {
     public static final double up = 0;
     public static final double pitch = 0;
     public static final double roll = 0;
-    public static final double yaw = 0; 
-  }
-  public static final class SHOOTER_LIMELIGHT {
-    public static final String NAME = "limelight-shooter";
-
-    public static final int HUMAN_PIPELINE_INDEX = 0;
-
-    public static final int GAMEPIECE_INDEX = 2;
-    public static final int AMP_PIPELINE_INDEX = 3;
-    public static final int SPEAKER_PIPELINE_INDEX = 4; // ids 4 and 7
-
-    public static final boolean IS_PRIMARY_STREAM = false;
-
-    public static final double MOUNTING_ANGLE_DEGREES = 0.0;
-    public static final double MOUNTING_HEIGHT_INCHES = 0.0;
-
-    public static final double DEFAULT_RETURN_VALUE = 0.0;
-
-    public static final double HEAD_ON_TOLERANCE = 0.0;
-
-    public static final double TARGET_WIDTH = 0.0;
-    public static final double TARGET_HEIGHT = 0.0;
-
-    public static final double TARGET_HEIGHT_FROM_FLOOR = 0.0;
+    public static final double yaw = 0;
+    
+    public static final double XStDevs = 0.5;
+    public static final double YStDevs = 0.5;
   }
 
   public static final class OIConstants {
