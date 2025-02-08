@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoAimToReef extends Command{
     SwerveSubsystem swerve;
+    double x;
+    double y;
     AutoAimToReef(SwerveSubsystem swerve){
         this.swerve = swerve;
 
@@ -25,6 +27,10 @@ public class AutoAimToReef extends Command{
     public void execute()
     {
         //make it go to the correct position
+
+        x=swerve.getPose().getX();
+        y=swerve.getPose().getY();
+
         swerve.driveToPose(new Pose2d(new Translation2d(0,0), new Rotation2d(0)));
     }
 
