@@ -64,6 +64,8 @@ public final class Constants {
     public static final int kElevatorLeftMotorId = 10;
     public static final int kElevatorRightMotorId = 9;
 
+    public static final double kAcceptableError = 0.3;
+
     public static final double kP = 0.2;
     public static final double kI = 0;
     public static final double kD = 0.0;
@@ -90,8 +92,8 @@ public final class Constants {
 
 
   public static class Coral {
-    public static final int kLeftMotorId = 11;
-    public static final int kRightMotorId = 12;
+    public static final int kLeftMotorId = 14;
+    public static final int kRightMotorId = 13;
 
     public static final int kLaserId = 0;
     public static final int kColorId = 16;
@@ -113,12 +115,12 @@ public final class Constants {
 
   public static class Algae {
     // WRIST
-    public static final int kWristMotorId = 13;
-    public static final int kIntakeMotorId = 14;
+    public static final int kWristMotorId = 11;
+    public static final int kIntakeMotorId = 12;
 
     public static final int kWristEncoderId = 9;
 
-    public static final int kMaxWristCurrent = 10;
+    public static final int kMaxWristCurrent = 0;//not set up
 
     public static final double kWristP = 0.01;
     public static final double kWristI = 0.0;
@@ -200,7 +202,7 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-      
+
   }
 
   public static final class OIConstants {

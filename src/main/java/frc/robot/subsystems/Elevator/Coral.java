@@ -10,18 +10,12 @@ import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //import frc.robot.simulation.SimulatableCANSparkMax;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-
+import com.revrobotics.spark.SparkFlex;
 import frc.robot.subsystems.LEDS.LEDs;
 
 public class Coral extends SubsystemBase {
@@ -49,8 +43,8 @@ public class Coral extends SubsystemBase {
 
   // private ThriftyNova mLeftMotor;
   // private ThriftyNova mRightMotor;
-  private SparkMax mLeftMotor;
-  private SparkMax mRightMotor;
+  private SparkFlex mLeftMotor; // spark flex
+  private SparkFlex mRightMotor;
 
   private LaserCan mLaserCAN;
 
@@ -59,8 +53,9 @@ public class Coral extends SubsystemBase {
 
     mPeriodicIO = new PeriodicIO();
 
-    mLeftMotor = new SparkMax(Constants.Coral.kLeftMotorId, MotorType.kBrushless);
-    mRightMotor = new SparkMax(Constants.Coral.kRightMotorId, MotorType.kBrushless);
+    mLeftMotor = new SparkFlex(Constants.Coral.kLeftMotorId, MotorType.kBrushless);
+    mRightMotor = new SparkFlex(Constants.Coral.kRightMotorId, MotorType.kBrushless);
+    //TODO: implement canandcolor
 
     SparkMaxConfig coralConfig = new SparkMaxConfig();
 
@@ -166,6 +161,12 @@ public class Coral extends SubsystemBase {
     mPeriodicIO.state = IntakeState.INDEX;
 
     m_leds.setColor(Color.kBlue);
+  }
+
+  public Command indexCommand(){
+    return this.run(()->this.index())
+    .until(()->!isHoldingCoralViaLaserCAN())
+    .finallyDo(()->this.stop());
   }
 
   public void scoreL1() {

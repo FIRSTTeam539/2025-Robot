@@ -10,7 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 //
@@ -205,11 +205,21 @@ public class ElevatorSubsystem extends SubsystemBase {
      mPeriodicIO.elevator_target = Constants.Elevator.kStowHeight;
      mPeriodicIO.state = ElevatorState.STOW;
    }
+
+   public Command goToElevatorStowCommand(){
+    return this.run(()->this.goToElevatorStow())
+    .until(()->Math.abs(Constants.Elevator.kStowHeight - mRightEncoder.getPosition())<Constants.Elevator.kAcceptableError);
+   } 
  
    public void goToElevatorL2() {
      mPeriodicIO.is_elevator_pos_control = true;
      mPeriodicIO.elevator_target = Constants.Elevator.kL2Height;
      mPeriodicIO.state = ElevatorState.L2;
+   }
+
+   public Command goToElevatorL2Command(){
+    return this.run(()->this.goToElevatorL2())
+    .until(()->Math.abs(Constants.Elevator.kL2Height - mRightEncoder.getPosition())<Constants.Elevator.kAcceptableError);
    }
  
    public void goToElevatorL3() {
@@ -217,11 +227,21 @@ public class ElevatorSubsystem extends SubsystemBase {
      mPeriodicIO.elevator_target = Constants.Elevator.kL3Height;
      mPeriodicIO.state = ElevatorState.L3;
    }
+
+   public Command goToElevatorL3Command(){
+    return this.run(()->this.goToElevatorL3())
+    .until(()->Math.abs(Constants.Elevator.kL3Height - mRightEncoder.getPosition())<Constants.Elevator.kAcceptableError);
+   }
  
    public void goToElevatorL4() {
      mPeriodicIO.is_elevator_pos_control = true;
      mPeriodicIO.elevator_target = Constants.Elevator.kL4Height;
      mPeriodicIO.state = ElevatorState.L4;
+   }
+
+   public Command goToElevatorL4Command(){
+    return this.run(()->this.goToElevatorL4())
+    .until(()->Math.abs(Constants.Elevator.kL4Height - mRightEncoder.getPosition())<Constants.Elevator.kAcceptableError);
    }
  
    public void goToAlgaeLow() {
@@ -234,6 +254,10 @@ public class ElevatorSubsystem extends SubsystemBase {
      mPeriodicIO.is_elevator_pos_control = true;
      mPeriodicIO.elevator_target = Constants.Elevator.kHighAlgaeHeight;
      mPeriodicIO.state = ElevatorState.A2;
+   }
+
+   public void disabledInit (){
+    this.stop();
    }
  
    /*---------------------------------- Custom Private Functions ---------------------------------*/   
