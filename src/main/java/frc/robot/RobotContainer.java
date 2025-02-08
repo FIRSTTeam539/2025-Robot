@@ -30,6 +30,8 @@ import frc.robot.utils.utils;
 
 import java.io.File;
 import edu.wpi.first.wpilibj2.command.Commands;
+
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
@@ -85,6 +87,7 @@ public class RobotContainer {
     // Configure default command
     
     //Shuffleboard.getTab("Arm").add(m_robotArm);
+    NamedCommands.registerCommand("Go to L4", m_ElevatorSubsystem.goToElevatorL4Command());
 
     Shuffleboard.getTab("Important").add("auto chooser", m_chooser);
     m_chooser.addOption("do nothing", null);
