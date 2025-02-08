@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //import frc.robot.simulation.SimulatableCANSparkMax;
 
+import com.reduxrobotics.canand.CanandDevice;
+import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.revrobotics.spark.SparkFlex;
 import frc.robot.subsystems.LEDS.LEDs;
 
@@ -35,7 +37,7 @@ public class Coral extends SubsystemBase {
   public enum IntakeState {
     NONE,
     INTAKE,
-    REVERSE,
+    // REVERSE,
     INDEX,
     READY,
     SCORE
@@ -47,8 +49,9 @@ public class Coral extends SubsystemBase {
   private SparkFlex mRightMotor;
 
   private LaserCan mLaserCAN;
+  private Canandcolor mCanandcolor;
 
-  private Coral() {
+  public Coral() {
     super("Coral");
 
     mPeriodicIO = new PeriodicIO();
@@ -70,6 +73,7 @@ public class Coral extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
+    // Configure the LaserCan (intake)
     mLaserCAN = new LaserCan(Constants.Coral.kLaserId);
     try {
       mLaserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
@@ -78,6 +82,9 @@ public class Coral extends SubsystemBase {
     } catch (ConfigurationFailedException e) {
       System.out.println("Configuration failed! " + e);
     }
+
+    // Configure the Canandcolor (outake)
+    mCanandcolor = new Canandcolor(Constants.Coral.kColorId);
   }
 
   private static class PeriodicIO {
@@ -132,53 +139,72 @@ public class Coral extends SubsystemBase {
 
   /*---------------------------------- Custom Public Functions ----------------------------------*/
 
-  public boolean isHoldingCoralViaLaserCAN() {
+  private boolean isHoldingCoralViaLaserCAN() {
     return mPeriodicIO.measurement.distance_mm < 75.0;
   }
 
-  public void setSpeed(double rpm) {
+  private boolean isHoldingCoralViaCanandColor() {
+    return mCanandcolor.getProximity() < 0.05; // Experimentally determined on 2025-02-08
+  }
+
+  private void setSpeed(double rpm) {
     mPeriodicIO.speed_diff = 0.0;
     mPeriodicIO.rpm = rpm;
   }
 
-  public void intake() {
-    mPeriodicIO.speed_diff = 0.0;
-    mPeriodicIO.rpm = Constants.Coral.kIntakeSpeed;
-    mPeriodicIO.state = IntakeState.INTAKE;
+  // public void intake() {
+  //   mPeriodicIO.speed_diff = 0.0;
+  //   mPeriodicIO.rpm = Constants.Coral.kIntakeSpeed;
+  //   mPeriodicIO.state = IntakeState.INTAKE;
 
-    m_leds.setColor(Color.kYellow);
+  //   m_leds.setColor(Color.kYellow);
+  // }
+
+  // public void reverse() {
+  //   mPeriodicIO.speed_diff = 0.0;
+  //   mPeriodicIO.rpm = Constants.Coral.kReverseSpeed;
+  //   mPeriodicIO.state = IntakeState.REVERSE;
+  // }
+
+  // public void index() {
+  //   mPeriodicIO.speed_diff = 0.0;
+  //   mPeriodicIO.rpm = Constants.Coral.kIndexSpeed;
+  //   mPeriodicIO.state = IntakeState.INDEX;
+
+  //   m_leds.setColor(Color.kBlue);
+  // }
+
+  public Command enterScoreState() {
+    return this.runOnce(() -> this.setState(IntakeState.SCORE));
   }
 
-  public void reverse() {
-    mPeriodicIO.speed_diff = 0.0;
-    mPeriodicIO.rpm = Constants.Coral.kReverseSpeed;
-    mPeriodicIO.state = IntakeState.REVERSE;
-  }
+  // public Command indexCommand(){
+  //   return this.run(()->this.index())
+  //   .until(()->!isHoldingCoralViaLaserCAN())
+  //   .finallyDo(()->this.stop());
+  // }
 
-  public void index() {
-    mPeriodicIO.speed_diff = 0.0;
-    mPeriodicIO.rpm = Constants.Coral.kIndexSpeed;
-    mPeriodicIO.state = IntakeState.INDEX;
+  // public Command intakeCommand() {
+  //   return this.run(() -> this.intake())
+  //   .until(()->isHoldingCoralViaLaserCAN())
+  //   .andThen(this.indexCommand())
+  //   .finallyDo(()->this.stop());
+  // }
 
-    m_leds.setColor(Color.kBlue);
-  }
+  // public void scoreL1() {
+  //   mPeriodicIO.speed_diff = Constants.Coral.kSpeedDifference;
+  //   mPeriodicIO.rpm = Constants.Coral.kL1Speed;
+  //   mPeriodicIO.state = IntakeState.SCORE;
+  // }
 
-  public Command indexCommand(){
-    return this.run(()->this.index())
-    .until(()->!isHoldingCoralViaLaserCAN())
-    .finallyDo(()->this.stop());
-  }
+  // public void scoreL24() {
+  //   mPeriodicIO.speed_diff = 0.0;
+  //   mPeriodicIO.rpm = Constants.Coral.kL24Speed;
+  //   mPeriodicIO.state = IntakeState.SCORE;
+  // }
 
-  public void scoreL1() {
-    mPeriodicIO.speed_diff = Constants.Coral.kSpeedDifference;
-    mPeriodicIO.rpm = Constants.Coral.kL1Speed;
-    mPeriodicIO.state = IntakeState.SCORE;
-  }
-
-  public void scoreL24() {
-    mPeriodicIO.speed_diff = 0.0;
-    mPeriodicIO.rpm = Constants.Coral.kL24Speed;
-    mPeriodicIO.state = IntakeState.SCORE;
+  public void setState(final IntakeState state) {
+    mPeriodicIO.state = state;
   }
 
   public void stopCoral() {
@@ -191,22 +217,37 @@ public class Coral extends SubsystemBase {
 
   private void checkAutoTasks() {
     switch (mPeriodicIO.state) {
-      case INTAKE:
+      case NONE:
+        this.setSpeed(0);
+        m_leds.setColor(new Color(1, 0, 0));
         if (isHoldingCoralViaLaserCAN()) {
-          mPeriodicIO.index_debounce++;
-
-          if (mPeriodicIO.index_debounce > 10) {
-            mPeriodicIO.index_debounce = 0;
-            index();
-          }
+          this.setState(IntakeState.INTAKE);
+        }
+        break;
+      case INTAKE:
+        this.setSpeed(Constants.Coral.kIntakeSpeed);
+        m_leds.setColor(new Color(1, 0.5, 0));
+        if (isHoldingCoralViaLaserCAN() && isHoldingCoralViaCanandColor()) {
+          this.setState(IntakeState.INDEX);
         }
         break;
       case INDEX:
+        this.setSpeed(Constants.Coral.kIndexSpeed);
+        m_leds.setColor(new Color(1, 1, 0));
         if (!isHoldingCoralViaLaserCAN()) {
-          stopCoral();
-
-          mPeriodicIO.state = IntakeState.READY;
-          m_leds.setColor(Color.kBlue);
+          this.setState(IntakeState.READY);
+        }
+        break;
+      case READY:
+        this.setSpeed(0.0);
+        // For now, the state will be moved to SCORE externally via controller1
+        m_leds.setColor(new Color(0, 1, 0));
+        break;
+      case SCORE:
+        this.setSpeed(Constants.Coral.kIntakeSpeed);
+        m_leds.setColor(new Color(0, 0, 1));
+        if (!isHoldingCoralViaCanandColor()) {
+          this.setState(IntakeState.NONE);
         }
         break;
       default:

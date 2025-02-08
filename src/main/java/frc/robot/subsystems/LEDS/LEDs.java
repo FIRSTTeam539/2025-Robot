@@ -2,6 +2,8 @@ package frc.robot.subsystems.LEDS;
 
 import java.util.function.Function;
 
+import com.ctre.phoenix.led.CANdle;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -14,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDs extends SubsystemBase {
   private static LEDs m_instance;
 
+  private CANdle m_CANdle60;
+  private CANdle m_CANdle61;
   private AddressableLED m_led;
   private AddressableLEDBuffer m_buffer;
 
@@ -32,6 +36,8 @@ public class LEDs extends SubsystemBase {
 
   private LEDs() {
     super("LEDs");
+    m_CANdle60 = new CANdle(60);
+    m_CANdle61 = new CANdle(61);
     m_led = new AddressableLED(Constants.LEDs.k_PWMId);
     m_led.setLength(m_ledTotalLength);
     m_buffer = new AddressableLEDBuffer(m_ledTotalLength);
@@ -46,6 +52,10 @@ public class LEDs extends SubsystemBase {
   }
 
   public void setColor(Color color) {
+    m_CANdle60.setLEDs((int) color.red*255,(int) color.green*255,(int) color.blue*255);
+    m_CANdle61.setLEDs((int) color.red*255,(int) color.green*255,(int) color.blue*255);
+    m_CANdle60.configBrightnessScalar(1.0);
+    m_CANdle61.configBrightnessScalar(1.0);
     m_ledStripColor = LEDModes.setColor(color);
   }
 

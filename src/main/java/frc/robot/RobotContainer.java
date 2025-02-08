@@ -20,11 +20,13 @@ import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 
 //for old climb system
 import frc.robot.subsystems.climber.ClimbSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 //modern subsystems
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Elevator.Coral.IntakeState;
+import frc.robot.subsystems.Elevator.Coral;
 
 import frc.robot.utils.utils;
 
@@ -61,6 +63,7 @@ public class RobotContainer {
   "swerve"));
   //private final LimelightSubsystem m_robotLimelight = new LimelightSubsystem("limelight"); //will delete
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
+  private final Coral m_CoralSubsystem = new Coral();
     
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
@@ -72,7 +75,7 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_robotDrive.getSwerveDrive(),
     () -> m_driverController0.getLeftY(),
     () -> m_driverController0.getLeftX())
-    .withControllerRotationAxis(m_driverController0::getRightX)
+    .withControllerRotationAxis(() -> m_driverController0.getRightX() * -1)
     .deadband(0.17)
     .scaleTranslation(
       0.8)
@@ -109,7 +112,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //when the right stick is pushed down, moves wheels in x formation to stop all movement
     //m_driverController0.x().whileTrue(Commands.run(() -> m_robotDrive.lock())); 
-    //m_driverController0.y().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
+    m_driverController0.y().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
+
     //m_driverController0.rightBumper().whileTrue(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight, 2));
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
     m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
@@ -117,16 +121,19 @@ public class RobotContainer {
 
 
 
-    m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.setElevatorPower(0.2))
+    /*m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.setElevatorPower(0.2))
                                     .finallyDo(()->m_ElevatorSubsystem.stop()));//set motor id
     m_driverController1.rightBumper().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.setElevatorPower(-0.2))
-                                    .finallyDo(()->m_ElevatorSubsystem.stop()));
+                                    .finallyDo(()->m_ElevatorSubsystem.stop()));*/
     
     m_driverController1.a().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorStow()));
     //m_driverController1.b().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL2()));
     m_driverController1.b().whileTrue(m_ElevatorSubsystem.goToElevatorL2Command());
     m_driverController1.x().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL3()));
     m_driverController1.y().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL4()));
+    
+    // m_driverController1.leftBumper().onTrue(m_CoralSubsystem.intakeCommand());
+    m_driverController1.rightBumper().onTrue(m_CoralSubsystem.enterScoreState());
 
     m_driverController1.rightTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.stop()));
     m_driverController1.leftTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.reset()));

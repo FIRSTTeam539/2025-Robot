@@ -95,8 +95,8 @@ public final class Constants {
     public static final int kLeftMotorId = 14;
     public static final int kRightMotorId = 13;
 
-    public static final int kLaserId = 0;
-    public static final int kColorId = 16;
+    public static final int kLaserId = 59;
+    public static final int kColorId = 58;
 
     public static final double kMaxCurrent = 20;
 

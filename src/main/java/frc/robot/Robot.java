@@ -14,6 +14,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.reduxrobotics.canand.CanandEventLoop;
+
+import au.grapplerobotics.CanBridge;
+
 import java.io.File;
 import java.io.IOException;
 import swervelib.parser.SwerveParser;
@@ -56,6 +60,8 @@ public class Robot extends TimedRobot
       PortForwarder.add(port, "limelight.local", port);
     }
     PathfindingCommand.warmupCommand().schedule();
+    CanBridge.runTCP();
+    CanandEventLoop.getInstance();
 
     //CameraServer.startAutomaticCapture(0);
     //CameraServer.startAutomaticCapture(1);
