@@ -94,6 +94,7 @@ public class RobotContainer {
     m_chooser.addOption("2m test", new PathPlannerAuto("2m test"));
     m_chooser.addOption("2m spin test", new PathPlannerAuto("2m spin test"));
     m_chooser.addOption("test Auto", new PathPlannerAuto("test Auto"));
+    m_chooser.addOption("1C I", new PathPlannerAuto("1C I"));
   }
 
   /**
