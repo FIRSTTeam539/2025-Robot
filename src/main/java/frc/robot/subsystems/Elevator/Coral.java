@@ -174,8 +174,18 @@ public class Coral extends SubsystemBase {
   //   m_leds.setColor(Color.kBlue);
   // }
 
-  public Command enterScoreState() {
-    return this.runOnce(() -> this.setState(IntakeState.SCORE));
+  public Command scoreL24Command() {
+    return this.run(() -> this.scoreL24())
+    .until(()->this.isNoneState()).finallyDo(()->this.setState(IntakeState.NONE));
+  }
+
+  public Command scoreL1Command() {
+    return this.run(() -> this.scoreL1())
+    .until(()->this.isNoneState()).finallyDo(()->this.setState(IntakeState.NONE));
+  }
+
+  public boolean isNoneState(){
+    return (!isHoldingCoralViaLaserCAN() && !isHoldingCoralViaCanandColor());
   }
 
   // public Command indexCommand(){
@@ -191,17 +201,22 @@ public class Coral extends SubsystemBase {
   //   .finallyDo(()->this.stop());
   // }
 
-  // public void scoreL1() {
-  //   mPeriodicIO.speed_diff = Constants.Coral.kSpeedDifference;
-  //   mPeriodicIO.rpm = Constants.Coral.kL1Speed;
-  //   mPeriodicIO.state = IntakeState.SCORE;
-  // }
+  public void scoreL1() {
+    mPeriodicIO.speed_diff = Constants.Coral.kSpeedDifference;
+     mPeriodicIO.rpm = Constants.Coral.kL1Speed;
+     mPeriodicIO.state = IntakeState.SCORE;
+  }
 
-  // public void scoreL24() {
-  //   mPeriodicIO.speed_diff = 0.0;
-  //   mPeriodicIO.rpm = Constants.Coral.kL24Speed;
-  //   mPeriodicIO.state = IntakeState.SCORE;
-  // }
+  public void scoreL24() {
+     mPeriodicIO.speed_diff = 0.0;
+     mPeriodicIO.rpm = Constants.Coral.kL24Speed;
+     mPeriodicIO.state = IntakeState.SCORE;
+  }
+
+  public void score (){
+    this.setSpeed(Constants.Coral.kIntakeSpeed);
+    m_leds.setColor(new Color(0, 0, 1));
+  }
 
   public void setState(final IntakeState state) {
     mPeriodicIO.state = state;
@@ -243,13 +258,13 @@ public class Coral extends SubsystemBase {
         // For now, the state will be moved to SCORE externally via controller1
         m_leds.setColor(new Color(0, 1, 0));
         break;
-      case SCORE:
+      /*case SCORE:
         this.setSpeed(Constants.Coral.kIntakeSpeed);
         m_leds.setColor(new Color(0, 0, 1));
         if (!isHoldingCoralViaCanandColor()) {
           this.setState(IntakeState.NONE);
-        }
-        break;
+        }*/
+        //break;
       default:
         break;
     }

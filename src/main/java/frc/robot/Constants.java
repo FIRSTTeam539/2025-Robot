@@ -50,13 +50,13 @@ public final class Constants {
     //public static final PIDFConfig TranslationPID = new PIDFConfig(0, 0, 0);
     //public static final PIDFConfig angleAutoPID   = new PIDFConfig(0.4, 0, 0.01);
 
-    public static final double MAX_SPEED        = 4;
+    public static final double MAX_SPEED        = 3.8;
     public static final double MAX_ACCELERATION = 2;
   }
    public static final class AutonConstants
   { // DO NOT DELTE (until this numbers are ut into the new auto PID and tuned)
     ///important numbers
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.02, 0, 0.0);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.9, 0, 0.0);
     public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
   }
 
@@ -82,7 +82,7 @@ public final class Constants {
     public static final double kStowHeight = 0.0;
     public static final double kL2Height = 9.0;
     public static final double kL3Height = 25.14;
-    public static final double kL4Height = 55.0;
+    public static final double kL4Height = 55.2;
     public static final double kMaxHeight = 56.2;
     public static final double kGroundAlgaeHeight = 0.0;
     public static final double kScoreAlgaeHeight = 0.0;
@@ -108,7 +108,7 @@ public final class Constants {
     public static final double kIntakeSpeed = 0.3;
     public static final double kReverseSpeed = -0.3;
     public static final double kL1Speed = 0.4;
-    public static final double kL24Speed = 0.4;
+    public static final double kL24Speed = 0.6;
     public static final double kIndexSpeed = 0.1;
     public static final double kSpeedDifference = kL1Speed * 0.5;
   }
@@ -190,10 +190,10 @@ public final class Constants {
 
   }
   public static final class LimelightConstants{
-    public static final double forward = 0;
+    public static final double forward = Units.inchesToMeters(29.5/2-2);
     public static final double side = 0;
-    public static final double up = 0;
-    public static final double pitch = 0;
+    public static final double up = Units.inchesToMeters(5.5);
+    public static final double pitch = 60;
     public static final double roll = 0;
     public static final double yaw = 0;
     

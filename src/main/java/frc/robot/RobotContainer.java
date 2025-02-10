@@ -47,6 +47,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import com.pathplanner.lib.auto.NamedCommands;
 import swervelib.SwerveInputStream;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+
 import java.util.List;
 
 
@@ -73,8 +79,8 @@ public class RobotContainer {
   //Command turnToAprilTagCommand = new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight);
   //SequentialCommandGroup x = new SequentialCommandGroup(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight), m_robotArm.moveToPositionCommand());
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_robotDrive.getSwerveDrive(),
-    () -> m_driverController0.getLeftY(),
-    () -> m_driverController0.getLeftX())
+    () -> -m_driverController0.getLeftY(),
+    () -> -m_driverController0.getLeftX())
     .withControllerRotationAxis(() -> m_driverController0.getRightX() * -1)
     .deadband(0.17)
     .scaleTranslation(
@@ -90,13 +96,15 @@ public class RobotContainer {
     // Configure default command
     
     //Shuffleboard.getTab("Arm").add(m_robotArm);
-    NamedCommands.registerCommand("Go to L4", m_ElevatorSubsystem.goToElevatorL4Command());
+    NamedCommands.registerCommand("L3", m_ElevatorSubsystem.goToElevatorL3Command()
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
 
     Shuffleboard.getTab("Important").add("auto chooser", m_chooser);
-    m_chooser.addOption("do nothing", null);
+    m_chooser.setDefaultOption("do nothing", null);
     m_chooser.addOption("2m test", new PathPlannerAuto("2m test"));
+    m_chooser.addOption("Start to Reef", new PathPlannerAuto("Start To Reef"));
     m_chooser.addOption("2m spin test", new PathPlannerAuto("2m spin test"));
-    m_chooser.addOption("test Auto", new PathPlannerAuto("test Auto"));
     m_chooser.addOption("1C I", new PathPlannerAuto("1C I"));
   }
 
@@ -126,17 +134,20 @@ public class RobotContainer {
     m_driverController1.rightBumper().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.setElevatorPower(-0.2))
                                     .finallyDo(()->m_ElevatorSubsystem.stop()));*/
     
-    m_driverController1.a().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorStow()));
+    m_driverController1.a().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
     //m_driverController1.b().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL2()));
     m_driverController1.b().whileTrue(m_ElevatorSubsystem.goToElevatorL2Command());
-    m_driverController1.x().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL3()));
-    m_driverController1.y().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL4()));
+    m_driverController1.x().whileTrue(m_ElevatorSubsystem.goToElevatorL3Command());
+    m_driverController1.y().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
     
     // m_driverController1.leftBumper().onTrue(m_CoralSubsystem.intakeCommand());
-    m_driverController1.rightBumper().onTrue(m_CoralSubsystem.enterScoreState());
+    m_driverController1.rightBumper().whileTrue(m_CoralSubsystem.scoreL24Command().andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
 
     m_driverController1.rightTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.stop()));
     m_driverController1.leftTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.reset()));
+
+    m_driverController0.povDown().whileTrue(m_robotDrive.driveToPose(new Pose2d(new Translation2d(3.032, 3.830), new Rotation2d(0))));
+
   }
 
   /**
@@ -147,7 +158,7 @@ public class RobotContainer {
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_chooser.getSelected();
+    return new PathPlannerAuto("Start To Reef");
     /*return m_robotArm.moveToPosCommand(Math.PI/4)
       .andThen(m_robotArm.moveToPosCommand(0.3919))
       .andThen(m_robotIntake.shootSpeakerCommand());*/

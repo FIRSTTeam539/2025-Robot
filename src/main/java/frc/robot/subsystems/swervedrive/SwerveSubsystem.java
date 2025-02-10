@@ -27,6 +27,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -68,7 +69,7 @@ public class SwerveSubsystem extends SubsystemBase
   //private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
   /**
    * Enable vision odometry updates while driving.
-   */
+   */ 
   private final boolean             visionDriveTest     = false;
 
   private final NetworkTable limelightNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -146,6 +147,8 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
+      SmartDashboard.putNumber("swerve/speed", 
+      Math.sqrt(Math.pow(swerveDrive.getRobotVelocity().vxMetersPerSecond,2)+Math.pow(swerveDrive.getRobotVelocity().vyMetersPerSecond, 2)));
     // When vision is enabled we must manually update odometry in SwerveDrive
     if (visionDriveTest)
     {
@@ -171,6 +174,28 @@ public class SwerveSubsystem extends SubsystemBase
       }
 //      vision.updatePoseEstimation(swerveDrive);
     }
+  }
+
+      /**
+   * 
+   * @return returns robot speed in meters per second
+   */
+  public double getRobotSpeedMeters(){
+    return Math.sqrt(Math.pow(swerveDrive.getRobotVelocity().vxMetersPerSecond,2)+Math.pow(swerveDrive.getRobotVelocity().vyMetersPerSecond, 2));
+  }
+  /**
+   * 
+   * @return returns angular velocity in degrees per second
+   */
+  public double getRobotAngularVelocityDegrees(){
+    return Units.radiansToDegrees(swerveDrive.getRobotVelocity().omegaRadiansPerSecond);
+  }
+  /**
+   * 
+   * @return returns angular velocity in radians per second
+   */
+  public double getRobotAngularVelocityRadians(){
+    return swerveDrive.getRobotVelocity().omegaRadiansPerSecond;
   }
 
   @Override
