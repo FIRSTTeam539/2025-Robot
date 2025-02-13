@@ -46,8 +46,7 @@ public class Algae extends SubsystemBase {
 
   private final REVThroughBoreEncoder mWristAbsEncoder = new REVThroughBoreEncoder(Constants.Algae.kWristEncoderId);
 
-  private Algae() {
-    super("Algae");
+  public Algae() {
 
     mPeriodicIO = new PeriodicIO();
 
