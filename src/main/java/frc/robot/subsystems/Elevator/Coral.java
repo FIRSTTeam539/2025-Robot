@@ -152,13 +152,13 @@ public class Coral extends SubsystemBase {
     mPeriodicIO.rpm = rpm;
   }
 
-  // public void intake() {
-  //   mPeriodicIO.speed_diff = 0.0;
-  //   mPeriodicIO.rpm = Constants.Coral.kIntakeSpeed;
-  //   mPeriodicIO.state = IntakeState.INTAKE;
+  public void intake() {
+    mPeriodicIO.speed_diff = 0.0;
+    mPeriodicIO.rpm = Constants.Coral.kIntakeSpeed;
+    mPeriodicIO.state = IntakeState.INTAKE;
 
-  //   m_leds.setColor(Color.kYellow);
-  // }
+     m_leds.setColor(Color.kYellow);
+  }
 
   // public void reverse() {
   //   mPeriodicIO.speed_diff = 0.0;
@@ -194,12 +194,12 @@ public class Coral extends SubsystemBase {
   //   .finallyDo(()->this.stop());
   // }
 
-  // public Command intakeCommand() {
-  //   return this.run(() -> this.intake())
-  //   .until(()->isHoldingCoralViaLaserCAN())
-  //   .andThen(this.indexCommand())
-  //   .finallyDo(()->this.stop());
-  // }
+  public Command intakeCommand() {
+     return this.run(() -> this.intake())
+     .until(()->isHoldingCoralViaLaserCAN())
+     .andThen(this.indexCommand())
+    .finallyDo(()->this.stop());
+  }
 
   public void scoreL1() {
     mPeriodicIO.speed_diff = Constants.Coral.kSpeedDifference;
@@ -211,11 +211,6 @@ public class Coral extends SubsystemBase {
      mPeriodicIO.speed_diff = 0.0;
      mPeriodicIO.rpm = Constants.Coral.kL24Speed;
      mPeriodicIO.state = IntakeState.SCORE;
-  }
-
-  public void score (){
-    this.setSpeed(Constants.Coral.kIntakeSpeed);
-    m_leds.setColor(new Color(0, 0, 1));
   }
 
   public void setState(final IntakeState state) {
