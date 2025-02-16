@@ -23,6 +23,7 @@ public class Algae extends SubsystemBase {
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Algae mInstance;
   private PeriodicIO mPeriodicIO;
+  private boolean on;
 
   public static Algae getInstance() {
     if (mInstance == null) {
@@ -54,7 +55,7 @@ public class Algae extends SubsystemBase {
     mWristMotor = new SparkMax(Constants.Algae.kWristMotorId, MotorType.kBrushless);
     SparkMaxConfig wristConfig = new SparkMaxConfig();
     wristConfig
-        .idleMode(IdleMode.kCoast)
+        .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(Constants.Algae.kMaxWristCurrent)
         .inverted(true);
 
@@ -95,10 +96,12 @@ public class Algae extends SubsystemBase {
   }
 
   private static class PeriodicIO {
-    double wrist_target_angle = 0.0;
+    double wrist_target_angle = 139;
     double wrist_voltage = 0.0;
 
     double intake_power = 0.0;
+
+    boolean on = false;
 
     IntakeState state = IntakeState.STOW;
   }
@@ -107,11 +110,14 @@ public class Algae extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double pidCalc = mWristPIDController.calculate(getWristAngle(), mPeriodicIO.wrist_target_angle);
-    double ffCalc = mWristFeedForward.calculate(Math.toRadians(getWristReferenceToHorizontal()),
-        Math.toRadians(mWristPIDController.getSetpoint().velocity));
+    if(on){
+      double pidCalc = mWristPIDController.calculate(getWristAngle(), mPeriodicIO.wrist_target_angle);
+      /*double ffCalc = mWristFeedForward.calculate(Math.toRadians(getWristReferenceToHorizontal()),
+          Math.toRadians(mWristPIDController.getSetpoint().velocity));*/
+      double ffCalc = 0;
 
-    mPeriodicIO.wrist_voltage = pidCalc + ffCalc;
+      mPeriodicIO.wrist_voltage =Math.max(Math.min(pidCalc + ffCalc, 0.2), -0.2);
+    }
     writePeriodicOutputs();
     outputTelemetry();
   }
@@ -120,6 +126,10 @@ public class Algae extends SubsystemBase {
     mWristMotor.set(mPeriodicIO.wrist_voltage);
 
     mIntakeMotor.set(mPeriodicIO.intake_power);
+  }
+
+  public void turnPIDon(boolean turn){
+    this.on = turn;
   }
 
   public void stop() {
@@ -137,6 +147,7 @@ public class Algae extends SubsystemBase {
     SmartDashboard.putNumber("Wrist/Output", mWristMotor.getAppliedOutput());
     SmartDashboard.putNumber("Wrist/Voltage", mPeriodicIO.wrist_voltage);
     SmartDashboard.putNumber("Wrist/Frequency", mWristAbsEncoder.getFrequency());
+    SmartDashboard.putNumber("Wrist/PIDVolt", mWristPIDController.calculate(getWristAngle(), mPeriodicIO.wrist_target_angle));
 
     SmartDashboard.putNumber("Intake/Current", mIntakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake/Output", mIntakeMotor.getAppliedOutput());
@@ -153,6 +164,17 @@ public class Algae extends SubsystemBase {
 
     mPeriodicIO.state = IntakeState.STOW;
     // mPeriodicIO.intake_power = 0.0;
+  }
+
+  public void setWristMotor(double power){
+    mPeriodicIO.wrist_voltage = power;
+    //mWristMotor.set(power);
+    //mPeriodicIO.on = true;
+  }
+
+  public void setIntakeMotor(double power){
+    mPeriodicIO.intake_power = power;
+    //mIntakeMotor.set(power);
   }
 
   public void grabAlgae() {
@@ -201,16 +223,17 @@ public class Algae extends SubsystemBase {
 
   // public double getSpeedFromState(IntakeState state) {
   // switch (state) {
+  
   // case NONE:
-  // return 0.0;
+  //   return 0.0;
   // case INTAKE:
-  // return RobotConstants.config.Intake.k_intakeSpeed;
+  //   return RobotConstants.config.Intake.k_intakeSpeed;
   // case INDEX:
-  // return RobotConstants.config.Intake.k_ejectSpeed;
+  //   return RobotConstants.config.Intake.k_ejectSpeed;
   // case READY:
-  // return RobotConstants.config.Intake.k_feedShooterSpeed;
+  //   return RobotConstants.config.Intake.k_feedShooterSpeed;
   // default:
-  // return 0.0;
+  //   return 0.0;
   // }
   // }
 }

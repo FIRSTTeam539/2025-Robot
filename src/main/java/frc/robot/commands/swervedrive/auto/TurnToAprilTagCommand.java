@@ -1,19 +1,18 @@
 package frc.robot.commands.swervedrive.auto;
 
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.LimelightConstants;
 
 
 public class TurnToAprilTagCommand extends Command{
-    private final LimelightSubsystem limelight;
     private final SwerveSubsystem swerve;
     private final double offset;
 
-    public TurnToAprilTagCommand(SwerveSubsystem swerve, LimelightSubsystem limelight, double offset){
-        this.limelight = limelight;
+    public TurnToAprilTagCommand(SwerveSubsystem swerve, double offset){
         this.swerve = swerve;
         this.offset = offset;
 
@@ -29,7 +28,8 @@ public class TurnToAprilTagCommand extends Command{
     @Override
     public void execute()
     {
-        swerve.drive(new Translation2d(0, 0), (-DriveConstants.kPAprilTag*(limelight.getTX()-offset)), false);
+        swerve.drive(new Translation2d(0, 0), (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-offset)), false);
+        //swerve.drive(new Translation2d(0, 0), (-DriveConstants.kPAprilTagRot*10*(LimelightHelpers.getTargetPose_RobotSpace(LimelightConstants.kLimelightName)[1]-offset)), false);
         
         /*if (limelight.getTV()){
             swerve.drive(swerve.getTargetSpeeds(0 ,0, Rotation2d.fromDegrees(-limelight.getTX())));   
@@ -46,7 +46,7 @@ public class TurnToAprilTagCommand extends Command{
     @Override
     public boolean isFinished()
     {
-        if (limelight.getTX()< 0.1-offset && limelight.getTX()> -0.1-offset){
+        if (LimelightHelpers.getTX(LimelightConstants.kLimelightName)< 0.1-offset && LimelightHelpers.getTX(LimelightConstants.kLimelightName)> -0.1-offset){
             return true;
         /* else if (Math.abs(limelight.getTX())<=DriveConstants.allowedAutoAimErrorRadians){
             return true;*/

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,17 +17,19 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.Elevator;
+import frc.robot.commands.swervedrive.auto.AutoAimToReef;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 
 //for old climb system
 import frc.robot.subsystems.climber.ClimbSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 
 //modern subsystems
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
-import frc.robot.subsystems.Elevator.Coral.IntakeState;
+import frc.robot.subsystems.Elevator.Algae.IntakeState;
 import frc.robot.subsystems.Elevator.Coral;
+import frc.robot.subsystems.Elevator.Algae;
 
 import frc.robot.utils.utils;
 
@@ -70,19 +73,44 @@ public class RobotContainer {
   //private final LimelightSubsystem m_robotLimelight = new LimelightSubsystem("limelight"); //will delete
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
   private final Coral m_CoralSubsystem = new Coral();
+  private final Algae m_AlgaeSubsystem = new Algae();
     
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
   // The driver's controller
   CommandXboxController m_driverController0 = new CommandXboxController(OIConstants.kDriverControllerPort0);
   CommandXboxController m_driverController1 = new CommandXboxController(OIConstants.kDriverControllerPort1);
-  //Command turnToAprilTagCommand = new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight);
+  Command turnToAprilTagCommand = new TurnToAprilTagCommand(m_robotDrive, 0);
   //SequentialCommandGroup x = new SequentialCommandGroup(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight), m_robotArm.moveToPositionCommand());
+  
+  Command autoAimToReefCommand = new AutoAimToReef(m_robotDrive);
+  
+  double driveSpeedElevatorControl = (m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight;
+  double translationSpeedCoef = 0.7;
+  double rotationSpeedCoef = 0.6;
+
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_robotDrive.getSwerveDrive(),
-    () -> -m_driverController0.getLeftY(),
-    () -> -m_driverController0.getLeftX())
-    .withControllerRotationAxis(() -> m_driverController0.getRightX() * -1)
-    .deadband(0.17)
+    //Y direction
+    () -> -MathUtil.applyDeadband(m_driverController0.getLeftY(), OIConstants.LEFT_Y_DEADBAND_1)
+    *(OIConstants.kDefaultDriveSpeed+
+    OIConstants.kDriveSpeedIncreaseConstant*
+    MathUtil.applyDeadband(m_driverController0.getRightTriggerAxis(), OIConstants.RIGHT_TRIGGER_DEADBAND_1))
+    *(1-Math.abs(translationSpeedCoef*m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight),
+
+    //X direction
+    () -> -MathUtil.applyDeadband(m_driverController0.getLeftX(), OIConstants.LEFT_X_DEADBAND_1)
+    *(OIConstants.kDefaultDriveSpeed+
+    OIConstants.kDriveSpeedIncreaseConstant*
+    MathUtil.applyDeadband(m_driverController0.getRightTriggerAxis(), OIConstants.RIGHT_TRIGGER_DEADBAND_1))
+    *(1-Math.abs(translationSpeedCoef*m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight))
+    //rot
+    .withControllerRotationAxis(() -> 
+      -MathUtil.applyDeadband(m_driverController0.getRightX(), OIConstants.RIGHT_X_DEADBAND_1)
+      *(OIConstants.kDefaultDriveSpeed+
+      OIConstants.kDriveSpeedIncreaseConstant*
+      MathUtil.applyDeadband(m_driverController0.getRightTriggerAxis(), OIConstants.RIGHT_TRIGGER_DEADBAND_1))
+      *(1-Math.abs(rotationSpeedCoef*m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight))//*(1-driveSpeedElevatorControl*rotationSpeedCoef))
+    .deadband(0.1)
     .scaleTranslation(
       0.8)
     .allianceRelativeControl(true);
@@ -141,12 +169,36 @@ public class RobotContainer {
     m_driverController1.y().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
     
     // m_driverController1.leftBumper().onTrue(m_CoralSubsystem.intakeCommand());
-    m_driverController1.rightBumper().whileTrue(m_CoralSubsystem.scoreL24Command().andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    m_driverController1.rightBumper().onTrue(m_CoralSubsystem.scoreL24Command().andThen(new WaitCommand(.25)).andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
 
-    m_driverController1.rightTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.stop()));
-    m_driverController1.leftTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.reset()));
+    //-m_driverController1.rightTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.stop()));
+    //m_driverController1.leftTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.reset()));
+    //m_driverController1.rightTrigger().onTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.stopAlgae()));
+    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
+      .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
+    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
+    .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
+    m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
+    .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
+    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.25))
+    .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.1)));
 
-    m_driverController0.povDown().whileTrue(m_robotDrive.driveToPose(new Pose2d(new Translation2d(3.032, 3.830), new Rotation2d(0))));
+    m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand());
+
+    /*m_driverController0.povDown().onTrue(Commands.run(()->{LimelightHelpers.setFiducial3DOffset("limelight", 
+      0.0,    // Forward offset
+      0.25,    // Side offset  
+      0.0     // Height offset
+      );}
+    ));*/
+
+    //m_driverController0.povRight().whileTrue(turnToAprilTagCommand);
+    m_driverController0.povRight().whileTrue((new AutoAimToReef(m_robotDrive)).andThen(m_ElevatorSubsystem.goToElevatorL2Command()));
+    m_driverController0.povUp().whileTrue(autoAimToReefCommand);
+
+    //m_driverController1.rightBumper().whileTrue(Commands.run(()->m_AlgaeSubsystem.turnPIDon(true)).finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));
+
+    //m_driverController0.povDown().whileTrue(m_robotDrive.driveToPose(new Pose2d(new Translation2d(3.032, 3.830), new Rotation2d(0))));
 
   }
 
@@ -168,6 +220,7 @@ public class RobotContainer {
   
   public void disabledInit (){
     m_ElevatorSubsystem.disabledInit();
+    m_CoralSubsystem.disabled();
   }
 
   public void setMotorBrake(boolean brake)

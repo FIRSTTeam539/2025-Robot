@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.subsystems.Subsystem;
 
 public class LEDs extends SubsystemBase {
-  private static LEDs m_instance;
+  /*private static LEDs m_instance;
 
   private CANdle m_CANdle60;
   // private CANdle m_CANdle61; //Removed hardware from robot
@@ -81,5 +81,5 @@ public class LEDs extends SubsystemBase {
 
   public void setColorMode() {
     m_buffer = m_ledStripColor.apply(0).apply(Constants.LEDs.k_totalLength).apply(m_buffer);
-  }
+  }*/
 }

@@ -18,14 +18,14 @@ import frc.robot.Constants;
 import com.reduxrobotics.canand.CanandDevice;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.revrobotics.spark.SparkFlex;
-import frc.robot.subsystems.LEDS.LEDs;
+//import frc.robot.subsystems.LEDS.LEDs;
 
 public class Coral extends SubsystemBase {
 
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Coral mInstance;
   private PeriodicIO mPeriodicIO;
-  public final LEDs m_leds = LEDs.getInstance();
+  //public final LEDs m_leds = LEDs.getInstance();
 
   public static Coral getInstance() {
     if (mInstance == null) {
@@ -157,7 +157,7 @@ public class Coral extends SubsystemBase {
     mPeriodicIO.rpm = Constants.Coral.kIntakeSpeed;
     mPeriodicIO.state = IntakeState.INTAKE;
 
-     m_leds.setColor(Color.kYellow);
+     //m_leds.setColor(Color.kYellow);
   }
 
   // public void reverse() {
@@ -166,13 +166,13 @@ public class Coral extends SubsystemBase {
   //   mPeriodicIO.state = IntakeState.REVERSE;
   // }
 
-  // public void index() {
-  //   mPeriodicIO.speed_diff = 0.0;
-  //   mPeriodicIO.rpm = Constants.Coral.kIndexSpeed;
-  //   mPeriodicIO.state = IntakeState.INDEX;
+  public void index() {
+    mPeriodicIO.speed_diff = 0.0;
+    mPeriodicIO.rpm = Constants.Coral.kIndexSpeed;
+    mPeriodicIO.state = IntakeState.INDEX;
 
-  //   m_leds.setColor(Color.kBlue);
-  // }
+    //m_leds.setColor(Color.kBlue);
+  }
 
   public Command scoreL24Command() {
     return this.run(() -> this.scoreL24())
@@ -188,19 +188,19 @@ public class Coral extends SubsystemBase {
     return (!isHoldingCoralViaLaserCAN() && !isHoldingCoralViaCanandColor());
   }
 
-  // public Command indexCommand(){
-  //   return this.run(()->this.index())
-  //   .until(()->!isHoldingCoralViaLaserCAN())
-  //   .finallyDo(()->this.stop());
-  // }
+  public Command indexCommand(){
+    return this.run(()->this.index())
+    .until(()->!isHoldingCoralViaLaserCAN())
+    .finallyDo(()->this.stop());
+  }
 
-  /*
+
   public Command intakeCommand() {
      return this.run(() -> this.intake())
-     .until(()->isHoldingCoralViaLaserCAN())
+     .until(()->isHoldingCoralViaLaserCAN() && isHoldingCoralViaCanandColor())
      .andThen(this.indexCommand())
     .finallyDo(()->this.stop());
-  }*/
+  }
 
   public void scoreL1() {
     mPeriodicIO.speed_diff = Constants.Coral.kSpeedDifference;
@@ -257,5 +257,9 @@ public class Coral extends SubsystemBase {
       default:
         break;
     }
+  }
+
+  public void disabled(){
+    this.setState(IntakeState.NONE);
   }
 }

@@ -66,23 +66,23 @@ public final class Constants {
 
     public static final double kAcceptableError = 0.3;
 
-    public static final double kP = 0.2;
+    public static final double kP = 0.25;
     public static final double kI = 0;
-    public static final double kD = 0.0;
+    public static final double kD = 5.5;
     public static final double kIZone = 5.0;
-    public static final double kG = 1;
+    public static final double kG = 1.1;
 
     public static final double kMaxVelocity = 65;
     public static final double kMaxAcceleration = 200;
 
     public static final int kMaxCurrent = 40;
-    public static final double kMaxPowerUp = -0.3;
-    public static final double kMaxPowerDown = 0.3;
+    public static final double kMaxPowerUp = -0.5;
+    public static final double kMaxPowerDown = 0.5;
 
-    public static final double kStowHeight = 0.0;
-    public static final double kL2Height = 9.0;
+    public static final double kStowHeight = 0.08;
+    public static final double kL2Height = 9.1;
     public static final double kL3Height = 25.14;
-    public static final double kL4Height = 55.2;
+    public static final double kL4Height = 55.15;
     public static final double kMaxHeight = 56.2;
     public static final double kGroundAlgaeHeight = 0.0;
     public static final double kScoreAlgaeHeight = 0.0;
@@ -105,11 +105,11 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kIZone = 0;
 
-    public static final double kIntakeSpeed = 0.3;
+    public static final double kIntakeSpeed = 0.25;
     public static final double kReverseSpeed = -0.3;
-    public static final double kL1Speed = 0.4;
-    public static final double kL24Speed = 0.6;
-    public static final double kIndexSpeed = 0.1;
+    public static final double kL1Speed = 0.3;
+    public static final double kL24Speed = 0.3;
+    public static final double kIndexSpeed = 0.05;
     public static final double kSpeedDifference = kL1Speed * 0.5;
   }
 
@@ -118,7 +118,7 @@ public final class Constants {
     public static final int kWristMotorId = 11;
     public static final int kIntakeMotorId = 12;
 
-    public static final int kWristEncoderId = 9;
+    public static final int kWristEncoderId = 0;
 
     public static final int kMaxWristCurrent = 0;//not set up
 
@@ -128,17 +128,17 @@ public final class Constants {
 
     public static final double kWristKS = 0.0;
     public static final double kWristKG = 0.0;
-    public static final double kWristKV = 0.100;
+    public static final double kWristKV = 0;//0.100;
     public static final double kWristKA = 0.0;
 
-    public static final double kWristOffset = 141.0;
+    public static final double kWristOffset = 210;
 
-    public static final double kWristMaxVelocity = 690.0;
-    public static final double kWristMaxAcceleration = 1380.0;
+    public static final double kWristMaxVelocity = 0.0001;//690.0;
+    public static final double kWristMaxAcceleration = 100;//1380.0;
 
-    public static final double kStowAngle = 233.0;
-    public static final double kDeAlgaeAngle = 215.0;
-    public static final double kGroundIntakeAngle = 162.0;
+    public static final double kStowAngle = 0;
+    public static final double kDeAlgaeAngle = -90;
+    public static final double kGroundIntakeAngle = -90;
 
     // INTAKE
     public static final int kMaxIntakeCurrent = 20;
@@ -186,14 +186,24 @@ public final class Constants {
     public static final double AMP_ROTATION_SETPOINT = Math.PI / 2;
     public static final double AUTO_TRANSLATE_DEBOUNCE_SECONDS = 0.1;
 
-    public static final double kPAprilTag = 0.07;
+
+    //AutoAim Constants
+    public static final double kPAprilTagRot = 0.07;
+    public static final double kPAprilTagTranDist = 1.4;
+    public static final double kPAprilTagTranSide = 2;
+
+    public static final double kDistOffset = 1;
+    public static final double kSideOff = 0.15;
+    public static final double kRotOffset = 0;
 
   }
   public static final class LimelightConstants{
-    public static final double forward = Units.inchesToMeters(29.5/2-2);
+    public static final String kLimelightName = "limelight";
+
+    public static final double forward = Units.inchesToMeters(15);
     public static final double side = 0;
-    public static final double up = Units.inchesToMeters(5.5);
-    public static final double pitch = 60;
+    public static final double up = Units.inchesToMeters(6);
+    public static final double pitch = 85;
     public static final double roll = 0;
     public static final double yaw = 0;
     
@@ -211,7 +221,7 @@ public final class Constants {
     public static final double kDriveDeadband = 0.05;
 
 
-    public static final double kDefaultDriveSpeed = 0.8;
+    public static final double kDefaultDriveSpeed = 0.6;
     public static final double kDriveSpeedIncreaseConstant = 1- kDefaultDriveSpeed;
     //controller 0
     // Joystick Deadband

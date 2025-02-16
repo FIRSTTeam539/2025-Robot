@@ -160,6 +160,10 @@ public class ElevatorSubsystem extends SubsystemBase {
  
      mRightMotor.set(0.0);
    }
+
+   public double getPosition(){
+    return mRightEncoder.getPosition();
+   }
  
    
    public void outputTelemetry() {
