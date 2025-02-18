@@ -81,7 +81,7 @@ public final class Constants {
 
     public static final double kStowHeight = 0.08;
     public static final double kL2Height = 9.1;
-    public static final double kL3Height = 25.14;
+    public static final double kL3Height = 26.14;
     public static final double kL4Height = 55.15;
     public static final double kMaxHeight = 56.2;
     public static final double kGroundAlgaeHeight = 0.0;
@@ -107,8 +107,8 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.25;
     public static final double kReverseSpeed = -0.3;
-    public static final double kL1Speed = 0.3;
-    public static final double kL24Speed = 0.3;
+    public static final double kL1Speed = 0.4;
+    public static final double kL24Speed = 0.4;
     public static final double kIndexSpeed = 0.05;
     public static final double kSpeedDifference = kL1Speed * 0.5;
   }
@@ -136,9 +136,9 @@ public final class Constants {
     public static final double kWristMaxVelocity = 0.0001;//690.0;
     public static final double kWristMaxAcceleration = 100;//1380.0;
 
-    public static final double kStowAngle = 0;
-    public static final double kDeAlgaeAngle = -90;
-    public static final double kGroundIntakeAngle = -90;
+    public static final double kStowAngle = 139;
+    public static final double kDeAlgaeAngle = 129;
+    public static final double kGroundIntakeAngle = 129;
 
     // INTAKE
     public static final int kMaxIntakeCurrent = 20;
@@ -190,11 +190,15 @@ public final class Constants {
     //AutoAim Constants
     public static final double kPAprilTagRot = 0.07;
     public static final double kPAprilTagTranDist = 1.4;
-    public static final double kPAprilTagTranSide = 2;
+    public static final double kPAprilTagTranSide = 2.3;
+
+    public static final double kAcceptableErrorSide = 0.01;
 
     public static final double kDistOffset = 1;
-    public static final double kSideOff = 0.15;
+    public static final double kSideOff = -0.15;
     public static final double kRotOffset = 0;
+    
+    public static final int kDistLaserId = 61;
 
   }
   public static final class LimelightConstants{

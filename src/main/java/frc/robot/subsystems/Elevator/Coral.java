@@ -17,6 +17,7 @@ import frc.robot.Constants;
 
 import com.reduxrobotics.canand.CanandDevice;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.ctre.phoenix.led.CANdle;
 import com.revrobotics.spark.SparkFlex;
 //import frc.robot.subsystems.LEDS.LEDs;
 
@@ -25,7 +26,8 @@ public class Coral extends SubsystemBase {
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Coral mInstance;
   private PeriodicIO mPeriodicIO;
-  //public final LEDs m_leds = LEDs.getInstance();
+  public CANdle m_CANdle60 = new CANdle(60);
+   //public final LEDs m_leds = LEDs.getInstance();
 
   public static Coral getInstance() {
     if (mInstance == null) {

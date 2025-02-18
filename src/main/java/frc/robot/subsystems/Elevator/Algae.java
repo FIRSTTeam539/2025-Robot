@@ -147,7 +147,7 @@ public class Algae extends SubsystemBase {
     SmartDashboard.putNumber("Wrist/Output", mWristMotor.getAppliedOutput());
     SmartDashboard.putNumber("Wrist/Voltage", mPeriodicIO.wrist_voltage);
     SmartDashboard.putNumber("Wrist/Frequency", mWristAbsEncoder.getFrequency());
-    SmartDashboard.putNumber("Wrist/PIDVolt", mWristPIDController.calculate(getWristAngle(), mPeriodicIO.wrist_target_angle));
+    SmartDashboard.putNumber("Wrist/PIDVolt", 27);
 
     SmartDashboard.putNumber("Intake/Current", mIntakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake/Output", mIntakeMotor.getAppliedOutput());

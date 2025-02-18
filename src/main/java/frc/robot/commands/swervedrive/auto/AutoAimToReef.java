@@ -1,5 +1,6 @@
 package frc.robot.commands.swervedrive.auto;
 
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -10,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.RawFiducial;
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
 
 public class AutoAimToReef extends Command{
     SwerveSubsystem swerve;
@@ -18,8 +21,18 @@ public class AutoAimToReef extends Command{
     double distToRobot;
     double distToCamera;
     double ambiguity;
+    private LaserCan mLaserCAN;
+    boolean forward = false;
     public AutoAimToReef(SwerveSubsystem swerve){
         this.swerve = swerve;
+         mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
+        try {
+            mLaserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
+            mLaserCAN.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+            mLaserCAN.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+        } catch (ConfigurationFailedException e) {
+            System.out.println("Configuration failed! " + e);
+        }
 
         addRequirements(swerve);
     }
@@ -27,6 +40,7 @@ public class AutoAimToReef extends Command{
     @Override
     public void initialize()
     {
+        forward = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -53,15 +67,32 @@ public class AutoAimToReef extends Command{
                 DriveConstants.kSideOff,    // Side offset  
                 0.0     // Height offset
                 );
+        SmartDashboard.putBoolean("Controls/forward", forward);
+        SmartDashboard.putNumber("Controls/Dist", mLaserCAN.getMeasurement().distance_mm);
         if(distToRobot > 3){
             swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset), 0), 
             (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)),
              false);
         } else {
-            swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset),
-            DriveConstants.kPAprilTagTranSide*(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)),
-            (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)),
-            false);
+            if (((distToCamera-DriveConstants.kDistOffset)< 0.1
+            && Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 1
+            && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)<DriveConstants.kAcceptableErrorSide)) {
+                forward = true;
+            }
+            if (forward == false){
+                swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset),
+                DriveConstants.kPAprilTagTranSide*(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)),
+                (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)),
+                false);
+            } else {
+
+                swerve.drive(new Translation2d(
+                    (((double) mLaserCAN.getMeasurement().distance_mm)/1000 - 0.35)*2*DriveConstants.kPAprilTagTranDist, 0), 
+                    0,
+                    false
+                );
+            }
+            //swerve.drive(new Translation2d(0, 0), 0, false);
         }
 
         SmartDashboard.putNumber("ambiguity", ambiguity);
@@ -84,11 +115,15 @@ public class AutoAimToReef extends Command{
     // Returns true when the command should end.
     @Override
     public boolean isFinished()
-    {   if (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 0.1 
-        && Math.abs(distToCamera-DriveConstants.kDistOffset)<0.05 
-        && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)<0.2){
+    {   if (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 1 
+        && Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - 0.5))<0.01 
+        && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)<DriveConstants.kAcceptableErrorSide){
             return true;
-    }
+        } else if (
+            !LimelightHelpers.getTV(LimelightConstants.kLimelightName)
+            && Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - 0.35))<0.01){
+                return true;
+        }
         return false;
     }
 }

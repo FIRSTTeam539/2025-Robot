@@ -70,7 +70,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */ 
-  private final boolean             visionDriveTest     = true;
+  private final boolean             visionDriveTest     = false;
 
   private final NetworkTable limelightNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
   
@@ -160,11 +160,11 @@ public class SwerveSubsystem extends SubsystemBase
       if(Math.abs(swerveDrive.getGyro().getYawAngularVelocity().baseUnitMagnitude()) > 720) {// if our angular velocity is greater than 720 degrees per second, ignore vision updates
       
         doRejectUpdate = true;
-      }
-      if(mt2.tagCount == 0)
+      } // TODO: Fix
+      /*if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
-      }
+      }*/
       if(!doRejectUpdate)
       {
         swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(LimelightConstants.XStDevs,LimelightConstants.YStDevs,9999999));
