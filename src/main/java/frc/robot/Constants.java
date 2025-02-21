@@ -190,15 +190,22 @@ public final class Constants {
     //AutoAim Constants
     public static final double kPAprilTagRot = 0.07;
     public static final double kPAprilTagTranDist = 1.4;
-    public static final double kPAprilTagTranSide = 2.3;
+    public static final double kPLaserDist = 2.4;
+    public static final double kPAprilTagTranSide = 2.1;
+    public static final double kDistFF = 0.05;
 
     public static final double kAcceptableErrorSide = 0.01;
 
-    public static final double kDistOffset = 1;
-    public static final double kSideOff = -0.15;
+    public static final double kDistOffset = 0.4;
+    public static final double kSideOffLeft = -0.15;
+    public static final double kSideOffRight = 0.15;
     public static final double kRotOffset = 0;
     
     public static final int kDistLaserId = 61;
+
+    public static final double kL2Dist = 0.1;
+    public static final double kL3Dist = 0.1;
+    public static final double kL4Dist = 0.25;
 
   }
   public static final class LimelightConstants{

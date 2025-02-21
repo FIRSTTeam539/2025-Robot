@@ -253,11 +253,19 @@ public class ElevatorSubsystem extends SubsystemBase {
      mPeriodicIO.elevator_target = Constants.Elevator.kLowAlgaeHeight;
      mPeriodicIO.state = ElevatorState.A1;
    }
- 
+   public Command goToAlgaeLowCommand(){
+    return this.run(()->this.goToAlgaeLow())
+    .until(()->Math.abs(Constants.Elevator.kLowAlgaeHeight - mRightEncoder.getPosition())<Constants.Elevator.kAcceptableError);
+   }
    public void goToAlgaeHigh() {
      mPeriodicIO.is_elevator_pos_control = true;
      mPeriodicIO.elevator_target = Constants.Elevator.kHighAlgaeHeight;
      mPeriodicIO.state = ElevatorState.A2;
+   }
+
+   public Command goToAlgaeHighCommand(){
+    return this.run(()->this.goToAlgaeHigh())
+    .until(()->Math.abs(Constants.Elevator.kHighAlgaeHeight - mRightEncoder.getPosition())<Constants.Elevator.kAcceptableError);
    }
 
    public void disabledInit (){

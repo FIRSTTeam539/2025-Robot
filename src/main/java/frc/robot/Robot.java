@@ -63,7 +63,7 @@ public class Robot extends TimedRobot
     CanBridge.runTCP();
     CanandEventLoop.getInstance();
 
-    //CameraServer.startAutomaticCapture(0);
+    CameraServer.startAutomaticCapture(0);
     //CameraServer.startAutomaticCapture(1);
 
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
@@ -86,6 +86,7 @@ public class Robot extends TimedRobot
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.writePeriodicOutputs();
   }
 
   /**

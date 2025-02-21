@@ -23,8 +23,15 @@ public class AutoAimToReef extends Command{
     double ambiguity;
     private LaserCan mLaserCAN;
     boolean forward = false;
-    public AutoAimToReef(SwerveSubsystem swerve){
+    boolean aim;
+    double SideOff;
+    boolean turnOnly;
+    boolean left;
+    int level;
+    double distGoal;
+    public AutoAimToReef(SwerveSubsystem swerve, boolean left, int level){
         this.swerve = swerve;
+        this.level= level;
          mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
         try {
             mLaserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
@@ -35,12 +42,30 @@ public class AutoAimToReef extends Command{
         }
 
         addRequirements(swerve);
+        this.left = left;
     }
 
     @Override
     public void initialize()
     {
         forward = false;
+        aim = true;
+        turnOnly =false;
+
+        if (left){
+            SideOff = DriveConstants.kSideOffLeft;
+        } else {
+            SideOff = DriveConstants.kSideOffRight;
+        }
+
+        switch (level){
+            case 2:
+                distGoal = DriveConstants.kL2Dist;
+            case 3:
+                distGoal = DriveConstants.kL3Dist;
+            case 4:
+            distGoal = DriveConstants.kL4Dist;
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -64,7 +89,7 @@ public class AutoAimToReef extends Command{
         false);*/
         LimelightHelpers.setFiducial3DOffset("limelight", 
                 0.0,    // Forward offset
-                DriveConstants.kSideOff,    // Side offset  
+                SideOff,    // Side offset  
                 0.0     // Height offset
                 );
         SmartDashboard.putBoolean("Controls/forward", forward);
@@ -75,19 +100,22 @@ public class AutoAimToReef extends Command{
              false);
         } else {
             if (((distToCamera-DriveConstants.kDistOffset)< 0.1
-            && Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 1
-            && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)<DriveConstants.kAcceptableErrorSide)) {
+            /*&& Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 1
+            && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-SideOff)<DriveConstants.kAcceptableErrorSide*/)) {
                 forward = true;
             }
-            if (forward == false){
-                swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset),
-                DriveConstants.kPAprilTagTranSide*(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)),
+            /*if((distToCamera-DriveConstants.kDistOffset)< 0.8){
+                aim = false;
+            }*/
+            if (forward == false){// && aim){
+                swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset)+DriveConstants.kDistFF,
+                DriveConstants.kPAprilTagTranSide*(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-SideOff)),
                 (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)),
                 false);
             } else {
 
                 swerve.drive(new Translation2d(
-                    (((double) mLaserCAN.getMeasurement().distance_mm)/1000 - 0.35)*2*DriveConstants.kPAprilTagTranDist, 0), 
+                    (((double) mLaserCAN.getMeasurement().distance_mm)/1000 - distGoal)*DriveConstants.kPLaserDist, 0), 
                     0,
                     false
                 );
@@ -115,13 +143,12 @@ public class AutoAimToReef extends Command{
     // Returns true when the command should end.
     @Override
     public boolean isFinished()
-    {   if (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 1 
-        && Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - 0.5))<0.01 
-        && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-DriveConstants.kSideOff)<DriveConstants.kAcceptableErrorSide){
+    {   /*if (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)< 1 
+        && Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - distGoal))<0.01 
+        && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-SideOff)<DriveConstants.kAcceptableErrorSide){
             return true;
-        } else if (
-            !LimelightHelpers.getTV(LimelightConstants.kLimelightName)
-            && Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - 0.35))<0.01){
+        } else */if (
+            Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - distGoal))<0.02){
                 return true;
         }
         return false;

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.Elevator;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.commands.swervedrive.auto.AutoAimToReef;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 
@@ -83,7 +84,6 @@ public class RobotContainer {
   Command turnToAprilTagCommand = new TurnToAprilTagCommand(m_robotDrive, 0);
   //SequentialCommandGroup x = new SequentialCommandGroup(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight), m_robotArm.moveToPositionCommand());
   
-  Command autoAimToReefCommand = new AutoAimToReef(m_robotDrive);
   
   double driveSpeedElevatorControl = (m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight;
   double translationSpeedCoef = 0.7;
@@ -152,58 +152,62 @@ public class RobotContainer {
     //m_driverController0.x().whileTrue(Commands.run(() -> m_robotDrive.lock())); 
     m_driverController0.y().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
 
-    //m_driverController0.rightBumper().whileTrue(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight, 2));
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
     m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    //m_driverController0.button(1).onTrue(Commands.run(()->SmartDashboard.putBoolean("yay!", false)));
 
-
-
-    /*m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.setElevatorPower(0.2))
-                                    .finallyDo(()->m_ElevatorSubsystem.stop()));//set motor id
-    m_driverController1.rightBumper().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.setElevatorPower(-0.2))
-                                    .finallyDo(()->m_ElevatorSubsystem.stop()));*/
+    m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
+    //L2
+    m_driverController1.x().whileTrue((new AutoAimToReef(m_robotDrive, false, 2))
+      .andThen(m_ElevatorSubsystem.goToElevatorL2Command())
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    m_driverController1.a().whileTrue((new AutoAimToReef(m_robotDrive, true, 2))
+      .andThen(m_ElevatorSubsystem.goToElevatorL2Command())
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      //L3
+    m_driverController1.y().whileTrue((new AutoAimToReef(m_robotDrive, false, 3))
+      .andThen(m_ElevatorSubsystem.goToElevatorL3Command())
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    m_driverController1.b().whileTrue((new AutoAimToReef(m_robotDrive, true, 3))
+      .andThen(m_ElevatorSubsystem.goToElevatorL3Command())
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    //L4
+    m_driverController1.rightBumper().whileTrue((new AutoAimToReef(m_robotDrive, false, 4))
+      .andThen(m_ElevatorSubsystem.goToElevatorL4Command()));
+    m_driverController1.rightTrigger().whileTrue((new AutoAimToReef(m_robotDrive, true, 4))
+      .andThen(m_ElevatorSubsystem.goToElevatorL4Command()));
+    //m_driverController1.rightBumper().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
     
-    m_driverController1.a().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
-    //m_driverController1.b().whileTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.goToElevatorL2()));
-    m_driverController1.b().whileTrue(m_ElevatorSubsystem.goToElevatorL2Command());
-    m_driverController1.x().whileTrue(m_ElevatorSubsystem.goToElevatorL3Command());
-    m_driverController1.y().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
+    m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand());
+
+    m_driverController1.back().whileTrue(m_CoralSubsystem.scoreL1Command());
+    m_driverController1.start().onTrue(m_CoralSubsystem.scoreL24Command()
+    .andThen(new WaitCommand(.25)).andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+
+    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
+      .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
+    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
+      .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
+    m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
+      .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
+    /*m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.25))
+      .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.1)));*/
+    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.turnPIDon(true))
+      .finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));
     
-    // m_driverController1.leftBumper().onTrue(m_CoralSubsystem.intakeCommand());
-    m_driverController1.rightBumper().onTrue(m_CoralSubsystem.scoreL24Command().andThen(new WaitCommand(.25)).andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeLowCommand());
+    m_driverController1.rightStick().whileTrue(m_ElevatorSubsystem.goToAlgaeHighCommand());
 
     //-m_driverController1.rightTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.stop()));
     //m_driverController1.leftTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.reset()));
     //m_driverController1.rightTrigger().onTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.stopAlgae()));
-    /*m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
-      .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
-    .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
-    .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
-    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.25))
-    .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.1)));*/
 
-    m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand());
 
-    /*m_driverController0.povDown().onTrue(Commands.run(()->{LimelightHelpers.setFiducial3DOffset("limelight", 
-      0.0,    // Forward offset
-      0.25,    // Side offset  
-      0.0     // Height offset
-      );}
-    ));*/
-
-    //m_driverController0.povRight().whileTrue(turnToAprilTagCommand);
-    m_driverController0.povRight().whileTrue((new AutoAimToReef(m_robotDrive)).andThen(m_ElevatorSubsystem.goToElevatorL2Command()));
-    m_driverController0.povUp().whileTrue(autoAimToReefCommand);
     
-    m_driverController1.back().whileTrue(m_CoralSubsystem.scoreL1Command());
-    m_driverController1.back().whileTrue(Commands.run(()->SmartDashboard.putBoolean("Controler/Test", true)));
-    m_driverController1.povUp().whileTrue(m_ElevatorSubsystem.run(
-      ()->m_ElevatorSubsystem.setElevatorPower(0.1)).finallyDo(()->m_ElevatorSubsystem.setElevatorPower(0)));
-    m_driverController1.povDown().whileTrue(m_ElevatorSubsystem.run(
-        ()->m_ElevatorSubsystem.setElevatorPower(-0.1)).finallyDo(()->m_ElevatorSubsystem.setElevatorPower(0)));
+
     //m_driverController1.rightBumper().whileTrue(Commands.run(()->m_AlgaeSubsystem.turnPIDon(true)).finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));
 
     //m_driverController0.povDown().whileTrue(m_robotDrive.driveToPose(new Pose2d(new Translation2d(3.032, 3.830), new Rotation2d(0))));
@@ -230,6 +234,10 @@ public class RobotContainer {
   public void disabledInit (){
     m_ElevatorSubsystem.disabledInit();
     m_CoralSubsystem.disabled();
+  }
+
+  public void writePeriodicOutputs(){
+    SmartDashboard.putBoolean("Driver/Within Angle", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15));
   }
 
   public void setMotorBrake(boolean brake)

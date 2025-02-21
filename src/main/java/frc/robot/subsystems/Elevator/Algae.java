@@ -111,7 +111,7 @@ public class Algae extends SubsystemBase {
   @Override
   public void periodic() {
     if(on){
-      double pidCalc = mWristPIDController.calculate(getWristAngle(), mPeriodicIO.wrist_target_angle);
+      double pidCalc = -(mPeriodicIO.wrist_target_angle-getWristAngle())*Constants.Algae.kWristP;
       /*double ffCalc = mWristFeedForward.calculate(Math.toRadians(getWristReferenceToHorizontal()),
           Math.toRadians(mWristPIDController.getSetpoint().velocity));*/
       double ffCalc = 0;
@@ -147,7 +147,7 @@ public class Algae extends SubsystemBase {
     SmartDashboard.putNumber("Wrist/Output", mWristMotor.getAppliedOutput());
     SmartDashboard.putNumber("Wrist/Voltage", mPeriodicIO.wrist_voltage);
     SmartDashboard.putNumber("Wrist/Frequency", mWristAbsEncoder.getFrequency());
-    SmartDashboard.putNumber("Wrist/PIDVolt", 27);
+    SmartDashboard.putNumber("Wrist/PIDVolt", -(mPeriodicIO.wrist_target_angle-getWristAngle())*Constants.Algae.kWristP);
 
     SmartDashboard.putNumber("Intake/Current", mIntakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake/Output", mIntakeMotor.getAppliedOutput());
