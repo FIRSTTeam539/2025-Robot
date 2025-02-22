@@ -76,7 +76,7 @@ public class RobotContainer {
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
   private final Coral m_CoralSubsystem = new Coral();
   private final Algae m_AlgaeSubsystem = new Algae();
-  //private final ClimbSubsystem m_ClimbSubsystem = new ClimbSubsystem();
+  private final ClimbSubsystem m_ClimbSubsystem = new ClimbSubsystem();
     
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
@@ -161,11 +161,15 @@ public class RobotContainer {
     m_driverController0.y().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
 
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
+    
     m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    //m_ClimbSubsystem.setDefaultCommand(Commands.run(()->m_ClimbSubsystem.setClimb(0.2*m_driverController1.getLeftY()), m_ClimbSubsystem));
+    m_ClimbSubsystem.setDefaultCommand(
+      Commands.run(()->m_ClimbSubsystem.setClimb(0.2*-m_driverController1.getLeftY()), m_ClimbSubsystem));
 
 
     //Start of Coral Commands
+
+    //L1
     m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
     //L2
     m_driverController1.x().whileTrue((new AutoAimToReef(m_robotDrive, false, 2))
@@ -187,17 +191,24 @@ public class RobotContainer {
       .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
     //L4
     m_driverController1.rightBumper().whileTrue((new AutoAimToReef(m_robotDrive, false, 4))
-      .andThen(m_ElevatorSubsystem.goToElevatorL4Command()));
+      .andThen(m_ElevatorSubsystem.goToElevatorL4Command())
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
     m_driverController1.rightTrigger().whileTrue((new AutoAimToReef(m_robotDrive, true, 4))
-      .andThen(m_ElevatorSubsystem.goToElevatorL4Command()));
+      .andThen(m_ElevatorSubsystem.goToElevatorL4Command())
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
 
     //End of Coral Commands Level Commands
     
+
+    //score/intake comands
     m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand());
 
     m_driverController1.back().whileTrue(m_CoralSubsystem.scoreL1Command());
     m_driverController1.start().onTrue(m_CoralSubsystem.scoreL24Command()
-    .andThen(new WaitCommand(.25)).andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(new WaitCommand(.25))
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
 
     //End of Coral Commands
 
@@ -207,24 +218,14 @@ public class RobotContainer {
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
     m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
-    /*m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.25))
-      .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.1)));*/
-    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.turnPIDon(true))
-      .finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));
+    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.35))
+      .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.15)));
+    /*m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.turnPIDon(true))
+      .finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));*/
     
+    //agae elevator comands
     m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeLowCommand());
     m_driverController1.rightStick().whileTrue(m_ElevatorSubsystem.goToAlgaeHighCommand());
-
-    //-m_driverController1.rightTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.stop()));
-    //m_driverController1.leftTrigger().onTrue(m_ElevatorSubsystem.run(()->m_ElevatorSubsystem.reset()));
-    //m_driverController1.rightTrigger().onTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.stopAlgae()));
-
-
-    
-
-    //m_driverController1.rightBumper().whileTrue(Commands.run(()->m_AlgaeSubsystem.turnPIDon(true)).finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));
-
-    //m_driverController0.povDown().whileTrue(m_robotDrive.driveToPose(new Pose2d(new Translation2d(3.032, 3.830), new Rotation2d(0))));
 
   }
 
@@ -248,11 +249,13 @@ public class RobotContainer {
   public void disabledInit (){
     m_ElevatorSubsystem.disabledInit();
     m_CoralSubsystem.disabled();
+    m_AlgaeSubsystem.disabledInit();
   }
 
   public void writePeriodicOutputs(){
     
-    SmartDashboard.putBoolean("Driver/Within Angle", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15));
+    SmartDashboard.putBoolean("Driver/Limelight Lock", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15)
+    &&Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<2);
     SmartDashboard.putNumber("LY", m_driverController1.getLeftY());
   }
 

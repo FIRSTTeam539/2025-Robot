@@ -86,7 +86,7 @@ public final class Constants {
     public static final double kMaxHeight = 56.2;
     public static final double kGroundAlgaeHeight = 0.0;
     public static final double kScoreAlgaeHeight = 0.0;
-    public static final double kLowAlgaeHeight = 24.8;
+    public static final double kLowAlgaeHeight = 20.8;
     public static final double kHighAlgaeHeight = 42.5;
   }
 
@@ -136,9 +136,9 @@ public final class Constants {
     public static final double kWristMaxVelocity = 0.0001;//690.0;
     public static final double kWristMaxAcceleration = 100;//1380.0;
 
-    public static final double kStowAngle = 139;
-    public static final double kDeAlgaeAngle = 129;
-    public static final double kGroundIntakeAngle = 129;
+    public static final double kStowAngle = 215;
+    public static final double kDeAlgaeAngle = 68;
+    public static final double kGroundIntakeAngle = 116;
 
     // INTAKE
     public static final int kMaxIntakeCurrent = 20;
@@ -197,8 +197,8 @@ public final class Constants {
     public static final double kAcceptableErrorSide = 0.01;
 
     public static final double kDistOffset = 0.4;
-    public static final double kSideOffLeft = -0.15;
-    public static final double kSideOffRight = 0.15;
+    public static final double kSideOffLeft = -0.14;
+    public static final double kSideOffRight = 0.14;
     public static final double kRotOffset = 0;
     
     public static final int kDistLaserId = 61;

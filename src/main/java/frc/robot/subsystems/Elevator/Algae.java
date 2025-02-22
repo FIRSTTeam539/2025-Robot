@@ -96,7 +96,7 @@ public class Algae extends SubsystemBase {
   }
 
   private static class PeriodicIO {
-    double wrist_target_angle = 139;
+    double wrist_target_angle = Constants.Algae.kStowAngle;
     double wrist_voltage = 0.0;
 
     double intake_power = 0.0;
@@ -114,9 +114,9 @@ public class Algae extends SubsystemBase {
       double pidCalc = -(mPeriodicIO.wrist_target_angle-getWristAngle())*Constants.Algae.kWristP;
       /*double ffCalc = mWristFeedForward.calculate(Math.toRadians(getWristReferenceToHorizontal()),
           Math.toRadians(mWristPIDController.getSetpoint().velocity));*/
-      double ffCalc = 0;
+      double ffCalc =0;// Math.cos(Math.toRadians(getWristReferenceToHorizontal()))*-0.1;
 
-      mPeriodicIO.wrist_voltage =Math.max(Math.min(pidCalc + ffCalc, 0.2), -0.2);
+      mPeriodicIO.wrist_voltage =Math.max(Math.min(pidCalc + ffCalc, 0.4), -0.4);
     }
     writePeriodicOutputs();
     outputTelemetry();
@@ -219,6 +219,12 @@ public class Algae extends SubsystemBase {
 
   public IntakeState getState() {
     return mPeriodicIO.state;
+  }
+
+  public void disabledInit(){
+    mPeriodicIO.intake_power =0;
+    mPeriodicIO.wrist_voltage =0;
+    on=false;
   }
 
   // public double getSpeedFromState(IntakeState state) {
