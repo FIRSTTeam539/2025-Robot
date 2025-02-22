@@ -149,8 +149,8 @@ public final class Constants {
   }
 
   public static final class ClimbConstants {
-    public static final int kClimbSparkMaxCANIDLeft = 13; // change to real value
-    public static final int kClimbSparkMaxCANIDRight = 14; // change to real value
+
+    public static final int kClimbSparkMaxCANID = 15;
 
     public static final double kStaticArmRate = 0;
   }

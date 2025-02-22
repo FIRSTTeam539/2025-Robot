@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.commands.swervedrive.auto.AutoAimToReef;
@@ -75,16 +76,14 @@ public class RobotContainer {
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
   private final Coral m_CoralSubsystem = new Coral();
   private final Algae m_AlgaeSubsystem = new Algae();
+  //private final ClimbSubsystem m_ClimbSubsystem = new ClimbSubsystem();
     
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
   // The driver's controller
   CommandXboxController m_driverController0 = new CommandXboxController(OIConstants.kDriverControllerPort0);
   CommandXboxController m_driverController1 = new CommandXboxController(OIConstants.kDriverControllerPort1);
-  Command turnToAprilTagCommand = new TurnToAprilTagCommand(m_robotDrive, 0);
-  //SequentialCommandGroup x = new SequentialCommandGroup(new TurnToAprilTagCommand(m_robotDrive, m_robotLimelight), m_robotArm.moveToPositionCommand());
-  
-  
+    
   double driveSpeedElevatorControl = (m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight;
   double translationSpeedCoef = 0.7;
   double rotationSpeedCoef = 0.6;
@@ -124,7 +123,16 @@ public class RobotContainer {
     // Configure default command
     
     //Shuffleboard.getTab("Arm").add(m_robotArm);
+    NamedCommands.registerCommand("L1", m_ElevatorSubsystem.goToElevatorStowCommand()
+      .andThen(m_CoralSubsystem.scoreL1Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    NamedCommands.registerCommand("L2", m_ElevatorSubsystem.goToElevatorL2Command()
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
     NamedCommands.registerCommand("L3", m_ElevatorSubsystem.goToElevatorL3Command()
+      .andThen(m_CoralSubsystem.scoreL24Command())
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    NamedCommands.registerCommand("L4", m_ElevatorSubsystem.goToElevatorL4Command()
       .andThen(m_CoralSubsystem.scoreL24Command())
       .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
     
@@ -154,7 +162,10 @@ public class RobotContainer {
 
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
     m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    //m_ClimbSubsystem.setDefaultCommand(Commands.run(()->m_ClimbSubsystem.setClimb(0.2*m_driverController1.getLeftY()), m_ClimbSubsystem));
 
+
+    //Start of Coral Commands
     m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
     //L2
     m_driverController1.x().whileTrue((new AutoAimToReef(m_robotDrive, false, 2))
@@ -179,13 +190,16 @@ public class RobotContainer {
       .andThen(m_ElevatorSubsystem.goToElevatorL4Command()));
     m_driverController1.rightTrigger().whileTrue((new AutoAimToReef(m_robotDrive, true, 4))
       .andThen(m_ElevatorSubsystem.goToElevatorL4Command()));
-    //m_driverController1.rightBumper().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
+
+    //End of Coral Commands Level Commands
     
     m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand());
 
     m_driverController1.back().whileTrue(m_CoralSubsystem.scoreL1Command());
     m_driverController1.start().onTrue(m_CoralSubsystem.scoreL24Command()
     .andThen(new WaitCommand(.25)).andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+
+    //End of Coral Commands
 
     m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
@@ -237,7 +251,9 @@ public class RobotContainer {
   }
 
   public void writePeriodicOutputs(){
+    
     SmartDashboard.putBoolean("Driver/Within Angle", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15));
+    SmartDashboard.putNumber("LY", m_driverController1.getLeftY());
   }
 
   public void setMotorBrake(boolean brake)
