@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -132,13 +133,6 @@ public class Algae extends SubsystemBase {
     this.on = turn;
   }
 
-  public void stop() {
-    mPeriodicIO.wrist_voltage = 0.0;
-    mPeriodicIO.wrist_target_angle = Constants.Algae.kStowAngle;
-
-    mWristMotor.set(0.0);
-    mIntakeMotor.set(0.0);
-  }
 
   public void outputTelemetry() {
     SmartDashboard.putNumber("Wrist/Position", getWristAngle());
@@ -159,12 +153,6 @@ public class Algae extends SubsystemBase {
 
   /*---------------------------------- Custom Public Functions ----------------------------------*/
 
-  public void stow() {
-    mPeriodicIO.wrist_target_angle = Constants.Algae.kStowAngle;
-
-    mPeriodicIO.state = IntakeState.STOW;
-    // mPeriodicIO.intake_power = 0.0;
-  }
 
   public void setWristMotor(double power){
     mPeriodicIO.wrist_voltage = power;
@@ -184,6 +172,10 @@ public class Algae extends SubsystemBase {
     mPeriodicIO.state = IntakeState.DEALGAE;
   }
 
+  public Command grabAlgaeCommand(){
+    return this.run(()->this.grabAlgae());
+  }
+
   public void score() {
     if (mPeriodicIO.state == IntakeState.GROUND) {
       mPeriodicIO.intake_power = -Constants.Algae.kEjectSpeed;
@@ -192,17 +184,48 @@ public class Algae extends SubsystemBase {
     }
   }
 
+  public Command scoreCommand(){
+    return this.run(()->this.score())
+      .finallyDo(()->this.stop());
+  }
+
   public void groundIntake() {
     mPeriodicIO.wrist_target_angle = Constants.Algae.kGroundIntakeAngle;
     mPeriodicIO.intake_power = Constants.Algae.kGroundIntakeSpeed;
 
     mPeriodicIO.state = IntakeState.GROUND;
   }
+  
+  public Command groundIntakeCommand(){
+    return this.run(()->this.groundIntake())
+      .finallyDo(()->this.stop());
+  }
 
-  public void stopAlgae() {
+  public void stowAlgae() {
     mPeriodicIO.intake_power = 0.0;
     mPeriodicIO.wrist_target_angle = Constants.Algae.kStowAngle;
+    mPeriodicIO.state = IntakeState.STOW;
   }
+
+  public Command stowAlgaeCommand(){
+    return this.run(()->stowAlgae())
+      .until(()->Math.abs(this.getWristAngle()-Constants.Algae.kStowAngle)<Constants.Algae.kAllowedWristError)
+      .finallyDo(()->this.stop());
+  }
+
+  public Command stopCommand(){
+    return this.run(()->stop());
+  }
+
+
+  public void stop() {
+    mPeriodicIO.wrist_voltage = 0.0;
+    mPeriodicIO.wrist_target_angle = Constants.Algae.kStowAngle;
+
+    mWristMotor.set(0.0);
+    mIntakeMotor.set(0.0);
+  }
+
 
   /*---------------------------------- Custom Private Functions ---------------------------------*/
 

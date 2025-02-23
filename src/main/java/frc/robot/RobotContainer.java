@@ -33,6 +33,8 @@ import frc.robot.subsystems.Elevator.Algae.IntakeState;
 import frc.robot.subsystems.Elevator.Coral;
 import frc.robot.subsystems.Elevator.Algae;
 
+import frc.robot.subsystems.LEDS.LEDs;
+
 import frc.robot.utils.utils;
 
 import java.io.File;
@@ -47,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import com.pathplanner.lib.auto.NamedCommands;
@@ -77,6 +80,8 @@ public class RobotContainer {
   private final Coral m_CoralSubsystem = new Coral();
   private final Algae m_AlgaeSubsystem = new Algae();
   private final ClimbSubsystem m_ClimbSubsystem = new ClimbSubsystem();
+
+  private final LEDs m_LEDs = new LEDs();
     
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   
@@ -119,13 +124,12 @@ public class RobotContainer {
   public RobotContainer() {
     
     configureButtonBindings();
+
+    m_LEDs.setColor(255, 0, 0, 0, 0, 60);
     
-    // Configure default command
-    
-    //Shuffleboard.getTab("Arm").add(m_robotArm);
+    // Configure pathlanner Commands
     NamedCommands.registerCommand("L1", m_ElevatorSubsystem.goToElevatorStowCommand()
-      .andThen(m_CoralSubsystem.scoreL1Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_CoralSubsystem.scoreL1Command()));
     NamedCommands.registerCommand("L2", m_ElevatorSubsystem.goToElevatorL2Command()
       .andThen(m_CoralSubsystem.scoreL24Command())
       .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
@@ -135,9 +139,22 @@ public class RobotContainer {
     NamedCommands.registerCommand("L4", m_ElevatorSubsystem.goToElevatorL4Command()
       .andThen(m_CoralSubsystem.scoreL24Command())
       .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+
+    NamedCommands.registerCommand("Go to stow", m_ElevatorSubsystem.goToElevatorStowCommand());
+    NamedCommands.registerCommand("Go to L2", m_ElevatorSubsystem.goToElevatorL2Command());
+    NamedCommands.registerCommand("Go to L3", m_ElevatorSubsystem.goToElevatorL3Command());
+    NamedCommands.registerCommand("Go to L4", m_ElevatorSubsystem.goToElevatorL4Command());
+
+    NamedCommands.registerCommand("shoot L1", m_CoralSubsystem.scoreL1Command());
+    NamedCommands.registerCommand("shoot L24", m_CoralSubsystem.scoreL24Command());
+    NamedCommands.registerCommand("intake", m_CoralSubsystem.intakeCommand());
     
     SmartDashboard.putBoolean("Controler/Test", false);
 
+    //End of Pathplanner named commands
+
+
+    //Auto Chooser
     Shuffleboard.getTab("Important").add("auto chooser", m_chooser);
     m_chooser.setDefaultOption("do nothing", null);
     m_chooser.addOption("2m test", new PathPlannerAuto("2m test"));
@@ -158,16 +175,29 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //when the right stick is pushed down, moves wheels in x formation to stop all movement
     //m_driverController0.x().whileTrue(Commands.run(() -> m_robotDrive.lock())); 
-    m_driverController0.y().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
+    m_driverController0.leftStick().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
+    m_driverController0.rightStick().whileTrue(m_robotDrive.run(()->m_robotDrive.lock()));
 
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
     
     m_robotDrive.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
+    //contolloer 0 elevator commands
+
+    m_driverController0.a().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
+    m_driverController0.b().whileTrue(m_ElevatorSubsystem.goToElevatorL2Command());
+    m_driverController0.x().whileTrue(m_ElevatorSubsystem.goToElevatorL3Command());
+    m_driverController0.y().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
+
+
+
     m_ClimbSubsystem.setDefaultCommand(
       Commands.run(()->m_ClimbSubsystem.setClimb(0.2*-m_driverController1.getLeftY()), m_ClimbSubsystem));
 
 
     //Start of Coral Commands
+
+    //TODO: ensure Algae is at stow for commands
 
     //L1
     m_driverController1.leftBumper().whileTrue(m_ElevatorSubsystem.goToElevatorStowCommand());
@@ -212,6 +242,7 @@ public class RobotContainer {
 
     //End of Coral Commands
 
+    //Algae manual controls
     m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
     m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
@@ -222,6 +253,16 @@ public class RobotContainer {
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.15)));
     /*m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.turnPIDon(true))
       .finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));*/
+
+    //Algae Position Controls
+    // m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.grabAlgaeCommand()
+    //     .alongWith(m_ElevatorSubsystem.goToAlgaeLowCommand())); //will not stop algae after command is realased
+    // m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.grabAlgaeCommand()
+    //     .alongWith(m_ElevatorSubsystem.goToAlgaeHighCommand())); //will not stop algae after command is realased
+    // m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.scoreCommand());
+    // m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.stowAlgaeCommand()
+    //     .alongWith(m_ElevatorSubsystem.goToElevatorStowCommand()));
+
     
     //agae elevator comands
     m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeLowCommand());
@@ -251,11 +292,11 @@ public class RobotContainer {
     m_CoralSubsystem.disabled();
     m_AlgaeSubsystem.disabledInit();
   }
-
+ 
   public void writePeriodicOutputs(){
     
-    SmartDashboard.putBoolean("Driver/Limelight Lock", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15)
-    &&Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<2);
+    SmartDashboard.putBoolean("Driver/Angle Lock", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15));
+    SmartDashboard.putBoolean("Driver/Sidways Lock",Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<2);
     SmartDashboard.putNumber("LY", m_driverController1.getLeftY());
   }
 

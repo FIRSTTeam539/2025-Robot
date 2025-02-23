@@ -131,14 +131,16 @@ public final class Constants {
     public static final double kWristKV = 0;//0.100;
     public static final double kWristKA = 0.0;
 
-    public static final double kWristOffset = 210;
-
     public static final double kWristMaxVelocity = 0.0001;//690.0;
     public static final double kWristMaxAcceleration = 100;//1380.0;
 
     public static final double kStowAngle = 215;
     public static final double kDeAlgaeAngle = 68;
     public static final double kGroundIntakeAngle = 116;
+
+    public static final double kWristOffset = 113; //TODO: find true value
+
+    public static final double kAllowedWristError = 1;
 
     // INTAKE
     public static final int kMaxIntakeCurrent = 20;
