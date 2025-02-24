@@ -56,8 +56,8 @@ public final class Constants {
    public static final class AutonConstants
   { // DO NOT DELTE (until this numbers are ut into the new auto PID and tuned)
     ///important numbers
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.9, 0, 0.0);
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(1.2, 0, 0.1);
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.7, 0, 0.01);
   }
 
   public static class Elevator {
@@ -122,7 +122,7 @@ public final class Constants {
 
     public static final int kMaxWristCurrent = 0;//not set up
 
-    public static final double kWristP = 0.01;
+    public static final double kWristP = 0.02;
     public static final double kWristI = 0.0;
     public static final double kWristD = 0.0;
 
@@ -131,12 +131,12 @@ public final class Constants {
     public static final double kWristKV = 0;//0.100;
     public static final double kWristKA = 0.0;
 
-    public static final double kWristMaxVelocity = 0.0001;//690.0;
-    public static final double kWristMaxAcceleration = 100;//1380.0;
+    //public static final double kWristMaxVelocity = 0.0001;//690.0;
+    //public static final double kWristMaxAcceleration = 100;//1380.0;
 
     public static final double kStowAngle = 215;
-    public static final double kDeAlgaeAngle = 68;
-    public static final double kGroundIntakeAngle = 116;
+    public static final double kDeAlgaeAngle = 58;
+    public static final double kGroundIntakeAngle = 105;
 
     public static final double kWristOffset = 113; //TODO: find true value
 
@@ -145,7 +145,8 @@ public final class Constants {
     // INTAKE
     public static final int kMaxIntakeCurrent = 20;
 
-    public static final double kIntakeSpeed = 0.6;
+    public static final double kIntakeSpeed = 0.3;
+    public static final double kAlgaeHoldSpeed = 0.35;
     public static final double kEjectSpeed = -0.3;
     public static final double kGroundIntakeSpeed = -0.3;
   }

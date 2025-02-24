@@ -135,6 +135,10 @@ public class Coral extends SubsystemBase {
     }
   }
 
+  public boolean hasCoral(){
+    return !isHoldingCoralViaLaserCAN()&isHoldingCoralViaCanandColor();
+  }
+
   public void reset() {
     stopCoral();
   }

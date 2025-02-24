@@ -41,8 +41,8 @@ public class Algae extends SubsystemBase {
   }
 
   private SparkMax mWristMotor;
-  private final ProfiledPIDController mWristPIDController;
-  private final ArmFeedforward mWristFeedForward;
+  //private final ProfiledPIDController mWristPIDController;
+  //private final ArmFeedforward mWristFeedForward;
 
   private SparkMax mIntakeMotor;
 
@@ -66,7 +66,7 @@ public class Algae extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     // Wrist PID
-    mWristPIDController = new ProfiledPIDController(
+   /* mWristPIDController = new ProfiledPIDController(
         Constants.Algae.kWristP,
         Constants.Algae.kWristI,
         Constants.Algae.kWristD,
@@ -79,7 +79,7 @@ public class Algae extends SubsystemBase {
         Constants.Algae.kWristKS,
         Constants.Algae.kWristKG,
         Constants.Algae.kWristKV,
-        Constants.Algae.kWristKA);
+        Constants.Algae.kWristKA);*/
 
     // INTAKE
     mIntakeMotor = new SparkMax(Constants.Algae.kIntakeMotorId, MotorType.kBrushless);
@@ -102,7 +102,7 @@ public class Algae extends SubsystemBase {
 
     double intake_power = 0.0;
 
-    boolean on = false;
+    boolean on = true;
 
     IntakeState state = IntakeState.STOW;
   }
@@ -117,7 +117,7 @@ public class Algae extends SubsystemBase {
           Math.toRadians(mWristPIDController.getSetpoint().velocity));*/
       double ffCalc =0;// Math.cos(Math.toRadians(getWristReferenceToHorizontal()))*-0.1;
 
-      mPeriodicIO.wrist_voltage =Math.max(Math.min(pidCalc + ffCalc, 0.4), -0.4);
+      mPeriodicIO.wrist_voltage =Math.max(Math.min(pidCalc + ffCalc, 0.8), -0.8);
     }
     writePeriodicOutputs();
     outputTelemetry();
@@ -167,7 +167,7 @@ public class Algae extends SubsystemBase {
 
   public void grabAlgae() {
     mPeriodicIO.wrist_target_angle = Constants.Algae.kDeAlgaeAngle;
-    mPeriodicIO.intake_power = Constants.Algae.kIntakeSpeed;
+    //mPeriodicIO.intake_power = Constants.Algae.kIntakeSpeed;
 
     mPeriodicIO.state = IntakeState.DEALGAE;
   }
@@ -184,21 +184,42 @@ public class Algae extends SubsystemBase {
     }
   }
 
+
   public Command scoreCommand(){
     return this.run(()->this.score())
-      .finallyDo(()->this.stop());
+      .finallyDo(()->this.stopShoot());
+  }
+
+  public void intake() {
+    if (mPeriodicIO.state == IntakeState.GROUND) {
+      mPeriodicIO.intake_power = Constants.Algae.kGroundIntakeSpeed;
+    } else {
+      mPeriodicIO.intake_power = Constants.Algae.kIntakeSpeed;
+    }
+  }
+
+  public Command intakeCommand(){
+    return this.run(()->this.intake())
+      .finallyDo(()->this.holdAlgae());
+  }
+
+  public void holdAlgae(){
+    if (mPeriodicIO.state == IntakeState.GROUND) {
+      mPeriodicIO.intake_power = -Constants.Algae.kAlgaeHoldSpeed;
+    } else {
+      mPeriodicIO.intake_power = Constants.Algae.kAlgaeHoldSpeed;
+    }
   }
 
   public void groundIntake() {
     mPeriodicIO.wrist_target_angle = Constants.Algae.kGroundIntakeAngle;
-    mPeriodicIO.intake_power = Constants.Algae.kGroundIntakeSpeed;
+    //mPeriodicIO.intake_power = Constants.Algae.kGroundIntakeSpeed;
 
     mPeriodicIO.state = IntakeState.GROUND;
   }
   
   public Command groundIntakeCommand(){
-    return this.run(()->this.groundIntake())
-      .finallyDo(()->this.stop());
+    return this.run(()->this.groundIntake());
   }
 
   public void stowAlgae() {
@@ -224,6 +245,11 @@ public class Algae extends SubsystemBase {
 
     mWristMotor.set(0.0);
     mIntakeMotor.set(0.0);
+  }
+
+  public void stopShoot(){
+    mIntakeMotor.set(0.0);
+    mPeriodicIO.intake_power = 0.0;
   }
 
 

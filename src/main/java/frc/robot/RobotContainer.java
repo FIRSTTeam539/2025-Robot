@@ -233,7 +233,7 @@ public class RobotContainer {
     
 
     //score/intake comands
-    m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand());
+    m_driverController1.leftTrigger().onTrue(m_CoralSubsystem.intakeCommand().unless(()->m_CoralSubsystem.hasCoral()));
 
     m_driverController1.back().whileTrue(m_CoralSubsystem.scoreL1Command());
     m_driverController1.start().onTrue(m_CoralSubsystem.scoreL24Command()
@@ -243,30 +243,36 @@ public class RobotContainer {
     //End of Coral Commands
 
     //Algae manual controls
-    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
+    m_driverController0.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
+    m_driverController0.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
+    m_driverController0.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
-    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.35))
-      .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.15)));
+    m_driverController0.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(0.35))
+      .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.35)));
     /*m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.turnPIDon(true))
       .finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));*/
 
     //Algae Position Controls
-    // m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.grabAlgaeCommand()
-    //     .alongWith(m_ElevatorSubsystem.goToAlgaeLowCommand())); //will not stop algae after command is realased
-    // m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.grabAlgaeCommand()
-    //     .alongWith(m_ElevatorSubsystem.goToAlgaeHighCommand())); //will not stop algae after command is realased
-    // m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.scoreCommand());
-    // m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.stowAlgaeCommand()
-    //     .alongWith(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.grabAlgaeCommand()
+        .alongWith(m_ElevatorSubsystem.goToAlgaeLowCommand())); //will not stop algae after command is realased
+    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.grabAlgaeCommand()
+        .alongWith(m_ElevatorSubsystem.goToAlgaeHighCommand())); //will not stop algae after command is realased
+    m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.groundIntakeCommand()
+      .alongWith(m_ElevatorSubsystem.goToElevatorStowCommand()));
+    m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.stowAlgaeCommand()
+        .alongWith(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      
+    m_driverController0.start().onTrue(Commands.run(()->m_AlgaeSubsystem.turnPIDon(false)));
+
+    m_driverController1.rightStick().whileTrue(m_AlgaeSubsystem.scoreCommand());
+    m_driverController1.leftStick().whileTrue(m_AlgaeSubsystem.intakeCommand());
 
     
     //agae elevator comands
-    m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeLowCommand());
-    m_driverController1.rightStick().whileTrue(m_ElevatorSubsystem.goToAlgaeHighCommand());
+    //m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeLowCommand());
+    //m_driverController1.rightStick().whileTrue(m_ElevatorSubsystem.goToAlgaeHighCommand());
 
   }
 
