@@ -26,7 +26,7 @@ public class Coral extends SubsystemBase {
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Coral mInstance;
   private PeriodicIO mPeriodicIO;
-  public CANdle m_CANdle60 = new CANdle(60);
+  //public CANdle m_CANdle60 = new CANdle(60);
    //public final LEDs m_leds = LEDs.getInstance();
 
   public static Coral getInstance() {
