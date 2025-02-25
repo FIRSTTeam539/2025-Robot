@@ -56,8 +56,8 @@ public final class Constants {
    public static final class AutonConstants
   { // DO NOT DELTE (until this numbers are ut into the new auto PID and tuned)
     ///important numbers
-    public static final PIDConstants TRANSLATION_PID = new PIDConstants(1.2, 0, 0.1);
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.7, 0, 0.01);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(1.3, 0, 0.15);
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(1.2, 0, 0.02);
   }
 
   public static class Elevator {
@@ -79,7 +79,7 @@ public final class Constants {
     public static final double kMaxPowerUp = -0.5;
     public static final double kMaxPowerDown = 0.5;
 
-    public static final double kStowHeight = 0.08;
+    public static final double kStowHeight = 0.1;
     public static final double kL2Height = 9.1;
     public static final double kL3Height = 26.14;
     public static final double kL4Height = 55.15;

@@ -102,7 +102,7 @@ public class Algae extends SubsystemBase {
 
     double intake_power = 0.0;
 
-    boolean on = true;
+    boolean on = false;
 
     IntakeState state = IntakeState.STOW;
   }

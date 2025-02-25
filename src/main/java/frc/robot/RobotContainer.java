@@ -157,10 +157,14 @@ public class RobotContainer {
     //Auto Chooser
     Shuffleboard.getTab("Important").add("auto chooser", m_chooser);
     m_chooser.setDefaultOption("do nothing", null);
+    m_chooser.addOption("Center to Coral", new PathPlannerAuto("Center to Coral"));
+    m_chooser.addOption("Center to H1", new PathPlannerAuto("Center to H1"));
     m_chooser.addOption("2m test", new PathPlannerAuto("2m test"));
     m_chooser.addOption("Start to Reef", new PathPlannerAuto("Start To Reef"));
     m_chooser.addOption("2m spin test", new PathPlannerAuto("2m spin test"));
-    m_chooser.addOption("1C I", new PathPlannerAuto("1C I"));
+
+    //Shuffleboard.getTab("Important").add("Path side")
+
   }
 
   /**
@@ -192,7 +196,7 @@ public class RobotContainer {
 
 
     m_ClimbSubsystem.setDefaultCommand(
-      Commands.run(()->m_ClimbSubsystem.setClimb(0.2*-m_driverController1.getLeftY()), m_ClimbSubsystem));
+      Commands.run(()->m_ClimbSubsystem.setClimb(0.2*m_driverController1.getLeftY()), m_ClimbSubsystem));
 
 
     //Start of Coral Commands
@@ -243,9 +247,9 @@ public class RobotContainer {
     //End of Coral Commands
 
     //Algae manual controls
-    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.25))
+    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.5))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.25))
+    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.5))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
     m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
