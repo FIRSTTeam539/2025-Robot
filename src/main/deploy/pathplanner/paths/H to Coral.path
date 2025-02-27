@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.176,
-        "y": 4.02
+        "x": 5.908499999999999,
+        "y": 4.181
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5325,
-        "y": 7.19375
+        "x": 6.357,
+        "y": 5.36075
       },
       "isLocked": false,
-      "linkedName": "Center"
+      "linkedName": "H"
+    },
+    {
+      "anchor": {
+        "x": 3.8415,
+        "y": 6.2675
+      },
+      "prevControl": {
+        "x": 4.995376532230166,
+        "y": 6.064620609717772
+      },
+      "nextControl": {
+        "x": 2.9542499999999996,
+        "y": 6.423500000000001
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 6.638
       },
       "prevControl": {
-        "x": 1.4039999999999986,
-        "y": 5.390000000000001
+        "x": 1.092,
+        "y": 5.945749999999999
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +47,20 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "go to stow",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 1.4868486352357095,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.4,
     "maxAcceleration": 5.5,
@@ -45,7 +74,7 @@
     "rotation": -53.80679269443525
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "To Coral",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

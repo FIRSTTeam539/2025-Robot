@@ -3,14 +3,20 @@
   "robotLength": 0.89,
   "holonomicMode": true,
   "pathFolders": [
+    "From Center",
+    "From Side",
+    "From Coral",
     "Score Line Up",
-    "Test Paths"
+    "Test Paths",
+    "To Coral"
   ],
   "autoFolders": [
+    "From Center",
+    "From Side",
     "Test Autos"
   ],
-  "defaultMaxVel": 3.8,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 4.4,
+  "defaultMaxAccel": 5.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,

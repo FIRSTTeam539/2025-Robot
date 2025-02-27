@@ -83,7 +83,9 @@ public class RobotContainer {
 
   private final LEDs m_LEDs = new LEDs();
     
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+  SendableChooser<Boolean> m_mirrorChooser = new SendableChooser<>();
+  
   
   // The driver's controller
   CommandXboxController m_driverController0 = new CommandXboxController(OIConstants.kDriverControllerPort0);
@@ -140,10 +142,10 @@ public class RobotContainer {
       .andThen(m_CoralSubsystem.scoreL24Command())
       .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
 
-    NamedCommands.registerCommand("Go to stow", m_ElevatorSubsystem.goToElevatorStowCommand());
-    NamedCommands.registerCommand("Go to L2", m_ElevatorSubsystem.goToElevatorL2Command());
-    NamedCommands.registerCommand("Go to L3", m_ElevatorSubsystem.goToElevatorL3Command());
-    NamedCommands.registerCommand("Go to L4", m_ElevatorSubsystem.goToElevatorL4Command());
+    NamedCommands.registerCommand("go to stow", m_ElevatorSubsystem.goToElevatorStowCommand());
+    NamedCommands.registerCommand("go to L2", m_ElevatorSubsystem.goToElevatorL2Command());
+    NamedCommands.registerCommand("go to L3", m_ElevatorSubsystem.goToElevatorL3Command());
+    NamedCommands.registerCommand("go to L4", m_ElevatorSubsystem.goToElevatorL4Command());
 
     NamedCommands.registerCommand("shoot L1", m_CoralSubsystem.scoreL1Command());
     NamedCommands.registerCommand("shoot L24", m_CoralSubsystem.scoreL24Command());
@@ -153,15 +155,21 @@ public class RobotContainer {
 
     //End of Pathplanner named commands
 
-
+    Shuffleboard.getTab("Important").add("mirrored", m_mirrorChooser);
+    m_mirrorChooser.setDefaultOption("Left", false);
+    m_mirrorChooser.addOption("right", true);
     //Auto Chooser
-    Shuffleboard.getTab("Important").add("auto chooser", m_chooser);
-    m_chooser.setDefaultOption("do nothing", null);
-    m_chooser.addOption("Center to Coral", new PathPlannerAuto("Center to Coral"));
-    m_chooser.addOption("Center to H1", new PathPlannerAuto("Center to H1"));
-    m_chooser.addOption("2m test", new PathPlannerAuto("2m test"));
-    m_chooser.addOption("Start to Reef", new PathPlannerAuto("Start To Reef"));
-    m_chooser.addOption("2m spin test", new PathPlannerAuto("2m spin test"));
+
+    Shuffleboard.getTab("Important").add("auto chooser", m_autoChooser);
+    m_autoChooser.setDefaultOption("do nothing", null);
+    m_autoChooser.addOption("S - J,L L4", new PathPlannerAuto("S - J,L L4", m_mirrorChooser.getSelected()));
+    m_autoChooser.addOption("C - H1", new PathPlannerAuto("C - H1", m_mirrorChooser.getSelected()));
+    m_autoChooser.addOption("C - Round-Robin L1", new PathPlannerAuto("C - Round-Robin L1", m_mirrorChooser.getSelected()));
+    m_autoChooser.addOption("C - 4 on KL", new PathPlannerAuto("C - 4 on KL", m_mirrorChooser.getSelected()));
+    m_autoChooser.addOption("Center to Coral", new PathPlannerAuto("Center to Coral", m_mirrorChooser.getSelected()));
+    // m_autoChooser.addOption("2m test", new PathPlannerAuto("2m test", m_mirrorChooser.getSelected()));
+    // m_autoChooser.addOption("Start to Reef", new PathPlannerAuto("Start To Reef", m_mirrorChooser.getSelected()));
+    // m_autoChooser.addOption("2m spin test", new PathPlannerAuto("2m spin test", m_mirrorChooser.getSelected()));
 
     //Shuffleboard.getTab("Important").add("Path side")
 
@@ -291,7 +299,7 @@ public class RobotContainer {
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_chooser.getSelected();
+    return m_autoChooser.getSelected();
     //return new PathPlannerAuto("Start To Reef");
     /*return m_robotArm.moveToPosCommand(Math.PI/4)
       .andThen(m_robotArm.moveToPosCommand(0.3919))

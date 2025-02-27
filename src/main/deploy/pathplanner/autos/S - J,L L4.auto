@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Side to J"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "go to L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L24"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J to Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral to L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "go to L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L24"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L to Coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "From Side",
+  "choreoAuto": false
+}

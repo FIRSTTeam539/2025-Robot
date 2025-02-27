@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.reduxrobotics.canand.CanandEventLoop;
+import frc.robot.utils.Elastic;
 
 import au.grapplerobotics.CanBridge;
 
@@ -119,6 +120,7 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    Elastic.selectTab("Autonomous");
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null)
@@ -141,7 +143,8 @@ public class Robot extends TimedRobot
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
-    // this line or comment it out.
+    // this line or comment it out. 
+    Elastic.selectTab("Teleoperated");
     if (m_autonomousCommand != null)
     {
       m_autonomousCommand.cancel();

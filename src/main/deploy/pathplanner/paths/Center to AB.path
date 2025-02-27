@@ -8,27 +8,48 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5325,
-        "y": 7.19375
+        "x": 6.298500000000001,
+        "y": 5.609249999999999
       },
       "isLocked": false,
       "linkedName": "Center"
     },
     {
       "anchor": {
-        "x": 0.6630000000000001,
-        "y": 6.638
+        "x": 4.485,
+        "y": 5.8385
       },
       "prevControl": {
-        "x": 1.4039999999999986,
-        "y": 5.390000000000001
+        "x": 5.371731475751174,
+        "y": 5.729673864339629
+      },
+      "nextControl": {
+        "x": 2.34,
+        "y": 6.101749999999999
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.16875,
+        "y": 4.02
+      },
+      "prevControl": {
+        "x": 1.80375,
+        "y": 4.04925
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral"
+      "linkedName": "AB"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9178423236514517,
+      "rotationDegrees": -95.19063655165797
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,10 +63,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.80679269443525
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "From Center",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

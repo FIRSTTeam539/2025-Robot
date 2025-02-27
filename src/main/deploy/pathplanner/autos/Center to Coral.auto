@@ -9,11 +9,17 @@
           "data": {
             "pathName": "Center to Coral"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 30.0
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Test Autos",
   "choreoAuto": false
 }
