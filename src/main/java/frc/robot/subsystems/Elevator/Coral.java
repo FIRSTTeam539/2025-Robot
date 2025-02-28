@@ -121,6 +121,11 @@ public class Coral extends SubsystemBase {
     mPeriodicIO.state = IntakeState.NONE;
   }
 
+  public void stopKeepState() {
+    mPeriodicIO.rpm = 0.0;
+    mPeriodicIO.speed_diff = 0.0;
+  }
+
   public void outputTelemetry() {
     SmartDashboard.putNumber("RPM/target", mPeriodicIO.rpm);
 
@@ -197,7 +202,7 @@ public class Coral extends SubsystemBase {
   public Command indexCommand(){
     return this.run(()->this.index())
     .until(()->!isHoldingCoralViaLaserCAN())
-    .finallyDo(()->this.stop());
+    .finallyDo(()->this.stopKeepState());
   }
 
 
@@ -205,7 +210,7 @@ public class Coral extends SubsystemBase {
      return this.run(() -> this.intake())
      .until(()->isHoldingCoralViaLaserCAN() && isHoldingCoralViaCanandColor())
      .andThen(this.indexCommand())
-    .finallyDo(()->this.stop());
+    .finallyDo(()->this.stopKeepState());
   }
 
   public void scoreL1() {
@@ -228,6 +233,10 @@ public class Coral extends SubsystemBase {
     mPeriodicIO.rpm = 0.0;
     mPeriodicIO.speed_diff = 0.0;
     mPeriodicIO.state = IntakeState.NONE;
+  }
+
+  public IntakeState getIntakeState(){
+    return mPeriodicIO.state;
   }
 
   /*---------------------------------- Custom Private Functions ---------------------------------*/

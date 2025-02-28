@@ -134,6 +134,7 @@ public class Algae extends SubsystemBase {
   }
 
 
+
   public void outputTelemetry() {
     SmartDashboard.putNumber("Wrist/Position", getWristAngle());
     SmartDashboard.putNumber("Wrist/Target", mPeriodicIO.wrist_target_angle);

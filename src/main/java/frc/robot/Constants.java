@@ -57,7 +57,7 @@ public final class Constants {
   { // DO NOT DELTE (until this numbers are ut into the new auto PID and tuned)
     ///important numbers
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(1.1, 0, 0.1); //1.3, 0.15 -- 3.5, 0.5
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.8, 0, 0.1); //2.2, 0 -- 4, 0
+    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.7, 0, 0.05); //2.2, 0 -- 4, 0
   }
 
   public static class Elevator {
@@ -68,7 +68,7 @@ public final class Constants {
 
     public static final double kP = 0.25;
     public static final double kI = 0;
-    public static final double kD = 5.5;
+    public static final double kD = 6; //5.5
     public static final double kIZone = 5.0;
     public static final double kG = 1.1;
 
@@ -82,7 +82,7 @@ public final class Constants {
     public static final double kStowHeight = 0.1;
     public static final double kL2Height = 9.1;
     public static final double kL3Height = 26.14;
-    public static final double kL4Height = 55.15;
+    public static final double kL4Height = 54.5; //55.15
     public static final double kMaxHeight = 56.2;
     public static final double kGroundAlgaeHeight = 0.0;
     public static final double kScoreAlgaeHeight = 0.0;
@@ -107,10 +107,10 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.25;
     public static final double kReverseSpeed = -0.3;
-    public static final double kL1Speed = 0.4;
+    public static final double kL1Speed = 0.5;
     public static final double kL24Speed = 0.4;
     public static final double kIndexSpeed = 0.05;
-    public static final double kSpeedDifference = kL1Speed * 0.5;
+    public static final double kSpeedDifference = kL1Speed * 0.75;
   }
 
   public static class Algae {
@@ -191,10 +191,10 @@ public final class Constants {
 
 
     //AutoAim Constants
-    public static final double kPAprilTagRot = 0.07;
+    public static final double kPAprilTagRot = 0.06;
     public static final double kPAprilTagTranDist = 1.4;
     public static final double kPLaserDist = 2.4;
-    public static final double kPAprilTagTranSide = 2.1;
+    public static final double kPAprilTagTranSide = 2.2;
     public static final double kDistFF = 0.05;
 
     public static final double kAcceptableErrorSide = 0.01;
@@ -208,11 +208,14 @@ public final class Constants {
 
     public static final double kL2Dist = 0.1;
     public static final double kL3Dist = 0.1;
-    public static final double kL4Dist = 0.25;
+    public static final double kL4Dist = 0.24;
 
   }
   public static final class LimelightConstants{
     public static final String kLimelightName = "limelight";
+
+    public static final double kSideLockError = 0.5;
+    public static final double kRotateLockError =15;
 
     public static final double forward = Units.inchesToMeters(15);
     public static final double side = 0;

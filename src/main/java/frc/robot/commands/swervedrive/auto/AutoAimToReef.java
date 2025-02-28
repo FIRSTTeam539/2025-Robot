@@ -32,14 +32,14 @@ public class AutoAimToReef extends Command{
     public AutoAimToReef(SwerveSubsystem swerve, boolean left, int level){
         this.swerve = swerve;
         this.level= level;
-         mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
+        /* mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
         try {
             mLaserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
             mLaserCAN.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
             mLaserCAN.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
         } catch (ConfigurationFailedException e) {
             System.out.println("Configuration failed! " + e);
-        }
+        }*/
 
         addRequirements(swerve);
         this.left = left;
@@ -93,7 +93,7 @@ public class AutoAimToReef extends Command{
                 0.0     // Height offset
                 );
         SmartDashboard.putBoolean("Controls/forward", forward);
-        SmartDashboard.putNumber("Controls/Dist", mLaserCAN.getMeasurement().distance_mm);
+        SmartDashboard.putNumber("Controls/Dist", swerve.getDistLaser());
         if(distToRobot > 3){
             swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset), 0), 
             (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)),
@@ -115,7 +115,7 @@ public class AutoAimToReef extends Command{
             } else {
 
                 swerve.drive(new Translation2d(
-                    (((double) mLaserCAN.getMeasurement().distance_mm)/1000 - distGoal)*DriveConstants.kPLaserDist, 0), 
+                    (((double) swerve.getDistLaser())/1000 - distGoal)*DriveConstants.kPLaserDist, 0), 
                     0,
                     false
                 );
@@ -148,7 +148,7 @@ public class AutoAimToReef extends Command{
         && Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]-SideOff)<DriveConstants.kAcceptableErrorSide){
             return true;
         } else */if (
-            Math.abs((((double) mLaserCAN.getMeasurement().distance_mm)/1000 - distGoal))<0.02){
+            Math.abs((((double) swerve.getDistLaser())/1000 - distGoal))<0.02){
                 return true;
         }
         return false;

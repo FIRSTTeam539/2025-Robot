@@ -6,6 +6,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.Constants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Elevator.Algae.IntakeState;
+import frc.robot.subsystems.Elevator.Algae;
+import frc.robot.subsystems.Elevator.Coral;
+
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -23,13 +31,23 @@ public class LEDs extends SubsystemBase {
     private final static int kLED_TOTAL = kLED_COLUMNS * kLED_ROWS + kSTRIP_LENGTH;
 
     private boolean m_isPanelDisabled = false;
+    private Coral coral;
+    private ElevatorSubsystem elevator;
+    private Algae algae;
 
-    /** Creates a new LedPannel. */
-    public LEDs() {
+    /** Creates a new LedPannel. 
+     * 
+     * 
+     * 
+    */
+    public LEDs(Coral coral, ElevatorSubsystem elevator, Algae algae) {
+        this.coral = coral;
+        this.algae = algae;
+        this.elevator = elevator;
         CANdleConfiguration configALL = new CANdleConfiguration();
         configALL.disableWhenLOS = false;
         configALL.stripType = LEDStripType.GRB;
-        configALL.brightnessScalar = 0.1; // dim the LEDs to half brightness
+        configALL.brightnessScalar = 0.5; // dim the LEDs to half brightness
         // configALL.vBatOutputMode = VBatOutputMode.Modulated;
         m_candle.configAllSettings(configALL, 100);
         m_Timer.start();
@@ -40,25 +58,31 @@ public class LEDs extends SubsystemBase {
     @Override
     public void periodic() {
         // limit to 10x a second
-        /*if (m_Timer.advanceIfElapsed(0.1)) {
+        if (m_Timer.advanceIfElapsed(0.1)) {
             // Only run if not disabled
             if (DriverStation.isDisabled()) {
                 // Turn all lights red
-                // m_candle.setLEDs(255, 0, 0);
+                m_candle.setLEDs(255, 0, 0);
             }
 
-            if (RobotContainer.m_Tracking.isTrackingTarget()) {
-                this.showTrackingStatusGreen();
-            } else {
-                this.showTrackingStatusRed();
+            if (!(Math.abs(algae.getWristAngle()-Constants.Algae.kStowAngle)<15)) {
+                showAlgaeArmMoved();
+            } else{
+                if (coral.getIntakeState() == Coral.IntakeState.INTAKE || coral.getIntakeState() == Coral.IntakeState.INDEX){
+                    showIntakeStatusYellow();
+                }  else if (coral.getIntakeState() == Coral.IntakeState.READY){
+                    if (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<LimelightConstants.kRotateLockError
+                    &&LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]<LimelightConstants.kSideLockError
+                    &&LimelightHelpers.getTV(LimelightConstants.kLimelightName)){
+                        showTrackingStatusGreen();
+                    } else{
+                        showIntakeStatusBlue();
+                    }
+                } else{
+                    showIntakeStatusRed();
+                }
             }
-
-            if (RobotContainer.m_GridSelector.isCube()) {
-                this.showCube();
-            } else {
-                this.showCone();
-            }
-        }*/
+        }
 
     }
 
@@ -75,28 +99,24 @@ public class LEDs extends SubsystemBase {
       m_candle.setLEDs(red, green, blue, white, start, finish);
   }
 
-    public void showVisionStatusGreen() {
-        m_candle.setLEDs(0, 255, 0, 0, kSTRIP_START, kSTRIP_LENGTH);
+    public void showIntakeStatusBlue() {
+        m_candle.setLEDs(0, 0, 255, 0, 0, kLED_TOTAL);
     }
 
-    public void showVisionStatusRed() {
-        m_candle.setLEDs(255, 0, 0, 0, kSTRIP_START, kSTRIP_LENGTH);
+    public void showIntakeStatusRed() {
+        m_candle.setLEDs(255, 0, 0, 0, 0, kLED_TOTAL);
     }
 
-    public void showVisionStatusYellow() {
-        m_candle.setLEDs(255, 255, 0, 0, kSTRIP_START, kSTRIP_LENGTH);
+    public void showIntakeStatusYellow() {
+        m_candle.setLEDs(255, 255, 0, 0, 0, kLED_TOTAL);
     }
 
     public void showTrackingStatusGreen() {
-        m_candle.setLEDs(0, 255, 0, 0, 100, 80);
+        m_candle.setLEDs(0, 255, 0, 0, 0, kLED_TOTAL);
     }
 
-    public void showTrackingStatusRed() {
-        m_candle.setLEDs(255, 0, 0, 0, 100, 80);
-    }
-
-    public void showTrackingStatusYellow() {
-        m_candle.setLEDs(255, 255, 0, 0, 100, 80);
+    public void showAlgaeArmMoved(){
+        m_candle.setLEDs(255, 255, 255, 0, 0, kLED_TOTAL);
     }
 
 }

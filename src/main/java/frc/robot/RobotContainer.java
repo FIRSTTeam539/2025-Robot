@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.commands.swervedrive.auto.AutoAimToReef;
@@ -42,6 +43,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -81,7 +84,8 @@ public class RobotContainer {
   private final Algae m_AlgaeSubsystem = new Algae();
   private final ClimbSubsystem m_ClimbSubsystem = new ClimbSubsystem();
 
-  private final LEDs m_LEDs = new LEDs();
+
+  private final LEDs m_LEDs = new LEDs(m_CoralSubsystem, m_ElevatorSubsystem, m_AlgaeSubsystem);
     
   SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   SendableChooser<Boolean> m_mirrorChooser = new SendableChooser<>();
@@ -127,7 +131,7 @@ public class RobotContainer {
     
     configureButtonBindings();
 
-    m_LEDs.setColor(255, 0, 0, 0, 0, 60);
+    m_LEDs.setColor(0, 255, 255, 0, 0, 66);
     
     // Configure pathlanner Commands
     NamedCommands.registerCommand("L1", m_ElevatorSubsystem.goToElevatorStowCommand()
@@ -162,6 +166,7 @@ public class RobotContainer {
 
     Shuffleboard.getTab("Important").add("auto chooser", m_autoChooser);
     m_autoChooser.setDefaultOption("do nothing", null);
+    m_autoChooser.addOption("S - J L1 - S", new PathPlannerAuto("S - J L1 - S", m_mirrorChooser.getSelected()));
     m_autoChooser.addOption("S - J,L L4", new PathPlannerAuto("S - J,L L4", m_mirrorChooser.getSelected()));
     m_autoChooser.addOption("C - H1", new PathPlannerAuto("C - H1", m_mirrorChooser.getSelected()));
     m_autoChooser.addOption("C - Round-Robin L1", new PathPlannerAuto("C - Round-Robin L1", m_mirrorChooser.getSelected()));
@@ -255,9 +260,9 @@ public class RobotContainer {
     //End of Coral Commands
 
     //Algae manual controls
-    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.5))
+    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.3))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.5))
+    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.3))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
     m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
@@ -316,9 +321,13 @@ public class RobotContainer {
  
   public void writePeriodicOutputs(){
     
-    SmartDashboard.putBoolean("Driver/Angle Lock", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<15));
-    SmartDashboard.putBoolean("Driver/Sidways Lock",Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<2);
+    SmartDashboard.putBoolean("Driver/Angle Lock", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<LimelightConstants.kRotateLockError)
+      &&LimelightHelpers.getTV(LimelightConstants.kLimelightName));
+    SmartDashboard.putBoolean("Driver/Sidways Lock",Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<LimelightConstants.kSideLockError
+      &&LimelightHelpers.getTV(LimelightConstants.kLimelightName));
     SmartDashboard.putNumber("LY", m_driverController1.getLeftY());
+    SmartDashboard.putNumber("Driver/Dist", m_robotDrive.getDistLaser());
+
   }
 
   public void setMotorBrake(boolean brake)

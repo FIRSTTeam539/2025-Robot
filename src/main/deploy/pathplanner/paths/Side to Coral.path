@@ -3,48 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8220000000000005,
-        "y": 5.16575
+        "x": 7.176,
+        "y": 7.535
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9640000000000013,
-        "y": 5.84825
+        "x": 6.122999999999999,
+        "y": 6.725750000000001
       },
       "isLocked": false,
-      "linkedName": "LK"
+      "linkedName": "Side"
     },
     {
       "anchor": {
-        "x": 1.6575,
-        "y": 7.3595
+        "x": 4.875,
+        "y": 6.6964999999999995
       },
       "prevControl": {
-        "x": 2.2425000000000006,
-        "y": 6.5794999999999995
+        "x": 5.124764039588765,
+        "y": 6.707359306069076
+      },
+      "nextControl": {
+        "x": 4.6221141874321265,
+        "y": 6.685504964670961
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8275,
+        "y": 7.008500000000001
+      },
+      "prevControl": {
+        "x": 3.4320000000000004,
+        "y": 6.62825
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "go to stow",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "intake",
-      "waypointRelativePos": 0.5885856079404393,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 2.0,
@@ -55,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.80679269443525
+    "rotation": -57.994616791916556
   },
   "reversed": false,
-  "folder": "To Coral",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

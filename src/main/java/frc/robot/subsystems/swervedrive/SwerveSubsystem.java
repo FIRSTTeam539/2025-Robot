@@ -16,6 +16,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -75,6 +78,8 @@ public class SwerveSubsystem extends SubsystemBase
   private final NetworkTable limelightNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
   
   boolean doRejectUpdate;
+  LaserCan mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
+
   /**
    * PhotonVision class to keep an accurate odometry.
    */
@@ -109,7 +114,15 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 //    swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-    if (visionDriveTest)
+try {
+  mLaserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
+  mLaserCAN.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+  mLaserCAN.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+} catch (ConfigurationFailedException e) {
+  System.out.println("Configuration failed! " + e);
+}
+
+  if (visionDriveTest)
     {
 //      setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
@@ -184,6 +197,10 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public double getRobotSpeedMeters(){
     return Math.sqrt(Math.pow(swerveDrive.getRobotVelocity().vxMetersPerSecond,2)+Math.pow(swerveDrive.getRobotVelocity().vyMetersPerSecond, 2));
+  }
+
+  public int getDistLaser(){
+    return mLaserCAN.getMeasurement().distance_mm;
   }
   /**
    * 
