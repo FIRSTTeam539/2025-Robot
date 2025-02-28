@@ -94,7 +94,7 @@ public class AutoAimToReef extends Command{
                 );
         SmartDashboard.putBoolean("Controls/forward", forward);
         SmartDashboard.putNumber("Controls/Dist", swerve.getDistLaser());
-        if(distToRobot > 3){
+        if(distToRobot > 2){
             swerve.drive(new Translation2d(DriveConstants.kPAprilTagTranDist*(distToCamera-DriveConstants.kDistOffset), 0), 
             (-DriveConstants.kPAprilTagRot*(LimelightHelpers.getTX(LimelightConstants.kLimelightName)-DriveConstants.kRotOffset)),
              false);
@@ -138,6 +138,7 @@ public class AutoAimToReef extends Command{
     public void end(boolean interrupted)
     {
         swerve.drive(new Translation2d(0,0), 0,false);
+        LimelightHelpers.setFiducial3DOffset(LimelightConstants.kLimelightName, 0, 0, 0);
     }
 
     // Returns true when the command should end.

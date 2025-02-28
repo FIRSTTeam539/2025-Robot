@@ -71,8 +71,8 @@ public class LEDs extends SubsystemBase {
                 if (coral.getIntakeState() == Coral.IntakeState.INTAKE || coral.getIntakeState() == Coral.IntakeState.INDEX){
                     showIntakeStatusYellow();
                 }  else if (coral.getIntakeState() == Coral.IntakeState.READY){
-                    if (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<LimelightConstants.kRotateLockError
-                    &&LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]<LimelightConstants.kSideLockError
+                    if ((Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<LimelightConstants.kRotateLockError)
+                    &&Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<LimelightConstants.kSideLockError
                     &&LimelightHelpers.getTV(LimelightConstants.kLimelightName)){
                         showTrackingStatusGreen();
                     } else{

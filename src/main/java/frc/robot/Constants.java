@@ -191,7 +191,8 @@ public final class Constants {
 
 
     //AutoAim Constants
-    public static final double kPAprilTagRot = 0.06;
+    public static final double kPFarAprilTagRot = 0.01;
+    public static final double kPAprilTagRot = 0.05;
     public static final double kPAprilTagTranDist = 1.4;
     public static final double kPLaserDist = 2.4;
     public static final double kPAprilTagTranSide = 2.2;
@@ -208,14 +209,14 @@ public final class Constants {
 
     public static final double kL2Dist = 0.1;
     public static final double kL3Dist = 0.1;
-    public static final double kL4Dist = 0.24;
+    public static final double kL4Dist = 0.26;
 
   }
   public static final class LimelightConstants{
     public static final String kLimelightName = "limelight";
 
-    public static final double kSideLockError = 0.5;
-    public static final double kRotateLockError =15;
+    public static final double kSideLockError = 0.3;
+    public static final double kRotateLockError =10;
 
     public static final double forward = Units.inchesToMeters(15);
     public static final double side = 0;
