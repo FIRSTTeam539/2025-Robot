@@ -68,6 +68,8 @@ public class ElevatorSubsystem extends SubsystemBase {
      elevatorConfig.smartCurrentLimit(Constants.Elevator.kMaxCurrent);
  
      elevatorConfig.idleMode(IdleMode.kBrake);
+
+     elevatorConfig.inverted(true);
     
      // RIGHT ELEVATOR MOTOR
     mRightMotor = new SparkMax(Constants.Elevator.kElevatorRightMotorId, MotorType.kBrushless);
@@ -83,7 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      mLeftEncoder = mLeftMotor.getEncoder();
      mLeftPIDController = mLeftMotor.getClosedLoopController();
      mLeftMotor.configure(
-         elevatorConfig.follow(mRightMotor),
+         elevatorConfig.follow(mRightMotor, false),
          ResetMode.kResetSafeParameters,
          PersistMode.kPersistParameters);
  

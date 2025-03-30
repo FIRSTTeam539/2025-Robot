@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.Elevator.Algae.IntakeState;
 import frc.robot.subsystems.Elevator.Algae;
@@ -27,13 +29,14 @@ public class LEDs extends SubsystemBase {
     private final static int kLED_COLUMNS = 4;
     private final static int kLED_ROWS = 2;
     private final static int kSTRIP_START = kLED_COLUMNS * kLED_ROWS;
-    private final static int kSTRIP_LENGTH = 60;
+    private final static int kSTRIP_LENGTH = 75;
     private final static int kLED_TOTAL = kLED_COLUMNS * kLED_ROWS + kSTRIP_LENGTH;
 
     private boolean m_isPanelDisabled = false;
     private Coral coral;
     private ElevatorSubsystem elevator;
     private Algae algae;
+    private double distToCamera;
 
     /** Creates a new LedPannel. 
      * 
@@ -46,7 +49,7 @@ public class LEDs extends SubsystemBase {
         this.elevator = elevator;
         CANdleConfiguration configALL = new CANdleConfiguration();
         configALL.disableWhenLOS = false;
-        configALL.stripType = LEDStripType.GRB;
+        configALL.stripType = LEDStripType.BRG;
         configALL.brightnessScalar = 0.5; // dim the LEDs to half brightness
         // configALL.vBatOutputMode = VBatOutputMode.Modulated;
         m_candle.configAllSettings(configALL, 100);
@@ -57,6 +60,10 @@ public class LEDs extends SubsystemBase {
 
     @Override
     public void periodic() {
+        RawFiducial[] fiducials = LimelightHelpers.getRawFiducials("");
+        for (RawFiducial fiducial : fiducials) {
+            distToCamera = fiducial.distToCamera;  // Distance to camera
+        }
         // limit to 10x a second
         if (m_Timer.advanceIfElapsed(0.1)) {
             // Only run if not disabled
@@ -73,7 +80,8 @@ public class LEDs extends SubsystemBase {
                 }  else if (coral.getIntakeState() == Coral.IntakeState.READY){
                     if ((Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<LimelightConstants.kRotateLockError)
                     &&Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<LimelightConstants.kSideLockError
-                    &&LimelightHelpers.getTV(LimelightConstants.kLimelightName)){
+                    &&LimelightHelpers.getTV(LimelightConstants.kLimelightName)
+                    && distToCamera>DriveConstants.kDistOffset+0.4){
                         showTrackingStatusGreen();
                     } else{
                         showIntakeStatusBlue();

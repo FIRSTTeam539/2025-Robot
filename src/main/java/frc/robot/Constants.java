@@ -66,18 +66,18 @@ public final class Constants {
 
     public static final double kAcceptableError = 0.3;
 
-    public static final double kP = 0.25;
+    public static final double kP = 0.25; //0.25
     public static final double kI = 0;
-    public static final double kD = 6; //5.5
+    public static final double kD = 0.3; //6
     public static final double kIZone = 5.0;
-    public static final double kG = 1.1;
+    public static final double kG = 1.1;//1.1;//-1.1;//1.1;
 
-    public static final double kMaxVelocity = 65;
-    public static final double kMaxAcceleration = 200;
+    public static final double kMaxVelocity = 60;//65
+    public static final double kMaxAcceleration = 100;//150
 
     public static final int kMaxCurrent = 40;
-    public static final double kMaxPowerUp = -0.5;
-    public static final double kMaxPowerDown = 0.5;
+    public static final double kMaxPowerUp = -0.3; //-0.4
+    public static final double kMaxPowerDown = 0.3;//0.4
 
     public static final double kStowHeight = 0.1;
     public static final double kL2Height = 9.1;
@@ -107,10 +107,10 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.25;
     public static final double kReverseSpeed = -0.3;
-    public static final double kL1Speed = 0.5;
+    public static final double kL1Speed = 0.35;
     public static final double kL24Speed = 0.4;
     public static final double kIndexSpeed = 0.05;
-    public static final double kSpeedDifference = kL1Speed * 0.75;
+    public static final double kSpeedDifference = kL1Speed * 0.80;
   }
 
   public static class Algae {
@@ -134,7 +134,7 @@ public final class Constants {
     //public static final double kWristMaxVelocity = 0.0001;//690.0;
     //public static final double kWristMaxAcceleration = 100;//1380.0;
 
-    public static final double kStowAngle = 215;
+    public static final double kStowAngle = 210;
     public static final double kDeAlgaeAngle = 58;
     public static final double kGroundIntakeAngle = 105;
 
@@ -192,9 +192,9 @@ public final class Constants {
 
     //AutoAim Constants
     public static final double kPFarAprilTagRot = 0.01;
-    public static final double kPAprilTagRot = 0.05;
+    public static final double kPAprilTagRot = 0.045;
     public static final double kPAprilTagTranDist = 1.4;
-    public static final double kPLaserDist = 2.4;
+    public static final double kPLaserDist = 2.5;
     public static final double kPAprilTagTranSide = 2.2;
     public static final double kDistFF = 0.05;
 
@@ -207,15 +207,15 @@ public final class Constants {
     
     public static final int kDistLaserId = 61;
 
-    public static final double kL2Dist = 0.1;
-    public static final double kL3Dist = 0.1;
+    public static final double kL2Dist = 0.09;
+    public static final double kL3Dist = 0.09;
     public static final double kL4Dist = 0.26;
 
   }
   public static final class LimelightConstants{
     public static final String kLimelightName = "limelight";
 
-    public static final double kSideLockError = 0.3;
+    public static final double kSideLockError = 0.15;
     public static final double kRotateLockError =10;
 
     public static final double forward = Units.inchesToMeters(15);

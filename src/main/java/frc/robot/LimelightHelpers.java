@@ -1141,7 +1141,9 @@ public class LimelightHelpers {
     }
 
     public static double[] getBotPose_TargetSpace(String limelightName) {
-        return getLimelightNTDoubleArray(limelightName, "botpose_targetspace");
+        double[] val = getLimelightNTDoubleArray(limelightName, "botpose_targetspace");
+        if(val.length == 0) return new double[]{-1};
+        else return val;
     }
 
     public static double[] getCameraPose_TargetSpace(String limelightName) {

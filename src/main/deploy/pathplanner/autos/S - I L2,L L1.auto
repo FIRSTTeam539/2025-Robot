@@ -1,0 +1,106 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Side to I"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "go to L2"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L24"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "I to Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "go to stow"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral to KL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "KL to Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral to KL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L1"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "From Side",
+  "choreoAuto": false
+}

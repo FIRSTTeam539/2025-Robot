@@ -171,6 +171,10 @@ public class Coral extends SubsystemBase {
      //m_leds.setColor(Color.kYellow);
   }
 
+  public Command setIntakeCommand(){
+    return this.run(()->this.intake());
+  }
+
   // public void reverse() {
   //   mPeriodicIO.speed_diff = 0.0;
   //   mPeriodicIO.rpm = Constants.Coral.kReverseSpeed;

@@ -73,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */ 
-  private final boolean             visionDriveTest     = false;
+  private final boolean             visionDriveTest     = true;
 
   private final NetworkTable limelightNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
   
@@ -174,10 +174,10 @@ try {
       
         doRejectUpdate = true;
       } // TODO: Fix
-      /*if(mt2.tagCount == 0)
+      if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
-      }*/
+      }
       if(!doRejectUpdate)
       {
         swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(LimelightConstants.XStDevs,LimelightConstants.YStDevs,9999999));
@@ -187,7 +187,6 @@ try {
       }
 //      vision.updatePoseEstimation(swerveDrive);
     }
-
     SmartDashboard.putNumber("Aim TX", LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0]);
   }
 

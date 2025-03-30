@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.Elevator;
@@ -25,7 +26,7 @@ import frc.robot.commands.swervedrive.auto.AutoAimToReef;
 import frc.robot.commands.swervedrive.auto.TurnToAprilTagCommand;
 
 //for old climb system
-import frc.robot.subsystems.climber.ClimbSubsystem;
+//import frc.robot.subsystems.climber.ClimbSubsystem;
 
 //modern subsystems
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -78,11 +79,9 @@ public class RobotContainer {
   // The robot's subsystems
   private final SwerveSubsystem m_robotDrive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
   "swerve"));
-  //private final LimelightSubsystem m_robotLimelight = new LimelightSubsystem("limelight"); //will delete
   private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
   private final Coral m_CoralSubsystem = new Coral();
   private final Algae m_AlgaeSubsystem = new Algae();
-  private final ClimbSubsystem m_ClimbSubsystem = new ClimbSubsystem();
 
 
   private final LEDs m_LEDs = new LEDs(m_CoralSubsystem, m_ElevatorSubsystem, m_AlgaeSubsystem);
@@ -95,7 +94,6 @@ public class RobotContainer {
   CommandXboxController m_driverController0 = new CommandXboxController(OIConstants.kDriverControllerPort0);
   CommandXboxController m_driverController1 = new CommandXboxController(OIConstants.kDriverControllerPort1);
     
-  double driveSpeedElevatorControl = (m_ElevatorSubsystem.getPosition())/Elevator.kMaxHeight;
   double translationSpeedCoef = 0.7;
   double rotationSpeedCoef = 0.6;
 
@@ -124,6 +122,8 @@ public class RobotContainer {
     .scaleTranslation(
       0.8)
     .allianceRelativeControl(true);
+
+  double distToCamera;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -153,6 +153,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("shoot L1", m_CoralSubsystem.scoreL1Command());
     NamedCommands.registerCommand("shoot L24", m_CoralSubsystem.scoreL24Command());
+    NamedCommands.registerCommand("set intake", m_CoralSubsystem.setIntakeCommand());
     NamedCommands.registerCommand("intake", m_CoralSubsystem.intakeCommand());
     
     SmartDashboard.putBoolean("Controler/Test", false);
@@ -167,9 +168,12 @@ public class RobotContainer {
     Shuffleboard.getTab("Important").add("auto chooser", m_autoChooser);
     m_autoChooser.setDefaultOption("do nothing", null);
     m_autoChooser.addOption("S - J L1 - S", "S - J L1 - S"); //new PathPlannerAuto("S - J L1 - S", m_mirrorChooser.getSelected()));
-    m_autoChooser.addOption("C - J L4",  "C - J L4");//new PathPlannerAuto("C - J L4", m_mirrorChooser.getSelected()));
-    m_autoChooser.addOption("C - H L4", "C - H L4");
+    m_autoChooser.addOption("S - J,L L1", "S - J,L L1");
+    m_autoChooser.addOption("S - J,L,L L1", "S - J,L,L L1");
+    m_autoChooser.addOption("S - I L2,L L1", "S - I L2,L L1"); 
+    // m_autoChooser.addOption("C - J L4",  "C - J L4");//new PathPlannerAuto("C - J L4", m_mirrorChooser.getSelected()));
     m_autoChooser.addOption("C - H1", "C - H1");//new PathPlannerAuto("C - H1", m_mirrorChooser.getSelected()));
+    m_autoChooser.addOption("C - I L2", "C - I L2");
     // m_autoChooser.addOption("C - Round-Robin L1", new PathPlannerAuto("C - Round-Robin L1", m_mirrorChooser.getSelected()));
     // m_autoChooser.addOption("C - 4 on KL", new PathPlannerAuto("C - 4 on KL", m_mirrorChooser.getSelected()));
     // m_autoChooser.addOption("Center to Coral", new PathPlannerAuto("Center to Coral", m_mirrorChooser.getSelected()));
@@ -193,7 +197,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //when the right stick is pushed down, moves wheels in x formation to stop all movement
     //m_driverController0.x().whileTrue(Commands.run(() -> m_robotDrive.lock())); 
-    m_driverController0.leftStick().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
+    m_driverController0.leftBumper().whileTrue(Commands.run(() -> m_robotDrive.zeroGyro()));
     m_driverController0.rightStick().whileTrue(m_robotDrive.run(()->m_robotDrive.lock()));
 
     Command driveFieldOrientedAnglularVelocity = m_robotDrive.driveFieldOriented(driveAngularVelocity);
@@ -206,11 +210,12 @@ public class RobotContainer {
     m_driverController0.b().whileTrue(m_ElevatorSubsystem.goToElevatorL2Command());
     m_driverController0.x().whileTrue(m_ElevatorSubsystem.goToElevatorL3Command());
     m_driverController0.y().whileTrue(m_ElevatorSubsystem.goToElevatorL4Command());
+    m_driverController0.leftTrigger().onTrue(m_CoralSubsystem.run(()->m_CoralSubsystem.stop()));
 
 
 
-    m_ClimbSubsystem.setDefaultCommand(
-      Commands.run(()->m_ClimbSubsystem.setClimb(0.2*m_driverController1.getLeftY()), m_ClimbSubsystem));
+    /*m_ClimbSubsystem.setDefaultCommand(
+      Commands.run(()->m_ClimbSubsystem.setClimb(0.2*m_driverController1.getLeftY()), m_ClimbSubsystem));*/
 
 
     //Start of Coral Commands
@@ -223,29 +228,35 @@ public class RobotContainer {
     m_driverController1.x().whileTrue((new AutoAimToReef(m_robotDrive, false, 2))
       .andThen(m_ElevatorSubsystem.goToElevatorL2Command())
       .andThen(m_CoralSubsystem.scoreL24Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand())
+      .unless(()->!m_CoralSubsystem.hasCoral()));
     m_driverController1.a().whileTrue((new AutoAimToReef(m_robotDrive, true, 2))
       .andThen(m_ElevatorSubsystem.goToElevatorL2Command())
       .andThen(m_CoralSubsystem.scoreL24Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand())
+      .unless(()->!m_CoralSubsystem.hasCoral()));
       //L3
     m_driverController1.y().whileTrue((new AutoAimToReef(m_robotDrive, false, 3))
       .andThen(m_ElevatorSubsystem.goToElevatorL3Command())
       .andThen(m_CoralSubsystem.scoreL24Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand())
+      .unless(()->!m_CoralSubsystem.hasCoral()));
     m_driverController1.b().whileTrue((new AutoAimToReef(m_robotDrive, true, 3))
       .andThen(m_ElevatorSubsystem.goToElevatorL3Command())
       .andThen(m_CoralSubsystem.scoreL24Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand())
+      .unless(()->!m_CoralSubsystem.hasCoral()));
     //L4
     m_driverController1.rightBumper().whileTrue((new AutoAimToReef(m_robotDrive, false, 4))
       .andThen(m_ElevatorSubsystem.goToElevatorL4Command())
       .andThen(m_CoralSubsystem.scoreL24Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand())
+      .unless(()->!m_CoralSubsystem.hasCoral()));
     m_driverController1.rightTrigger().whileTrue((new AutoAimToReef(m_robotDrive, true, 4))
       .andThen(m_ElevatorSubsystem.goToElevatorL4Command())
       .andThen(m_CoralSubsystem.scoreL24Command())
-      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand()));
+      .andThen(m_ElevatorSubsystem.goToElevatorStowCommand())
+      .unless(()->!m_CoralSubsystem.hasCoral()));
 
     //End of Coral Commands Level Commands
     
@@ -261,9 +272,9 @@ public class RobotContainer {
     //End of Coral Commands
 
     //Algae manual controls
-    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.3))
+    m_driverController1.povDown().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(0.5))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
-    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.3))
+    m_driverController1.povUp().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setWristMotor(-0.5))
       .finallyDo(()->m_AlgaeSubsystem.setWristMotor(0)));
     m_driverController1.povLeft().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.setIntakeMotor(-0.25))
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0)));
@@ -271,7 +282,16 @@ public class RobotContainer {
       .finallyDo(()->m_AlgaeSubsystem.setIntakeMotor(0.35)));
 
     m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeLowCommand());
-    m_driverController1.leftStick().whileTrue(m_ElevatorSubsystem.goToAlgaeHighCommand());
+    m_driverController1.rightStick().whileTrue(m_ElevatorSubsystem.goToAlgaeHighCommand());
+
+
+
+
+
+
+    //UNUSED
+
+
     /*m_driverController1.povRight().whileTrue(m_AlgaeSubsystem.run(()->m_AlgaeSubsystem.turnPIDon(true))
       .finallyDo(()->m_AlgaeSubsystem.turnPIDon(false)));*/
 
@@ -325,11 +345,20 @@ public class RobotContainer {
   }
  
   public void writePeriodicOutputs(){
+    RawFiducial[] fiducials = LimelightHelpers.getRawFiducials("");
+    for (RawFiducial fiducial : fiducials) {
+        distToCamera = fiducial.distToCamera;  // Distance to camera
+    }
     
     SmartDashboard.putBoolean("Driver/Angle Lock", (Math.abs(LimelightHelpers.getTX(LimelightConstants.kLimelightName))<LimelightConstants.kRotateLockError)
       &&LimelightHelpers.getTV(LimelightConstants.kLimelightName));
-    SmartDashboard.putBoolean("Driver/Sidways Lock",Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<LimelightConstants.kSideLockError
+    SmartDashboard.putBoolean("Driver/Sidways Lock", Math.abs(LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.kLimelightName)[0])<LimelightConstants.kSideLockError
       &&LimelightHelpers.getTV(LimelightConstants.kLimelightName));
+    SmartDashboard.putBoolean("Driver/Dist Lock", distToCamera>DriveConstants.kDistOffset+0.4
+      &&LimelightHelpers.getTV(LimelightConstants.kLimelightName));
+    
+    SmartDashboard.putNumber("driver dsit", distToCamera);
+
     SmartDashboard.putNumber("LY", m_driverController1.getLeftY());
     SmartDashboard.putNumber("Driver/Dist", m_robotDrive.getDistLaser());
 

@@ -156,7 +156,11 @@ public class Algae extends SubsystemBase {
 
 
   public void setWristMotor(double power){
-    mPeriodicIO.wrist_voltage = power;
+    if (this.getWristAngle() > 200 && power < 0){
+      mPeriodicIO.wrist_voltage = 0;
+    } else {
+      mPeriodicIO.wrist_voltage = power;
+    }
     //mWristMotor.set(power);
     //mPeriodicIO.on = true;
   }
@@ -238,7 +242,6 @@ public class Algae extends SubsystemBase {
   public Command stopCommand(){
     return this.run(()->stop());
   }
-
 
   public void stop() {
     mPeriodicIO.wrist_voltage = 0.0;

@@ -1,0 +1,87 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Side to IJ"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "IJ to Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral to KL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "KL to Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral to KL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot L1"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "From Side",
+  "choreoAuto": false
+}
