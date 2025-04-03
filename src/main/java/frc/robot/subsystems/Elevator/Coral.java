@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //import frc.robot.simulation.SimulatableCANSparkMax;
+import frc.robot.utils.Elastic;
 
 import com.reduxrobotics.canand.CanandDevice;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
@@ -76,7 +77,12 @@ public class Coral extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     // Configure the LaserCan (intake)
-    mLaserCAN = new LaserCan(Constants.Coral.kLaserId);
+    try{
+      mLaserCAN = new LaserCan(Constants.Coral.kLaserId);
+    } catch(Exception e){
+      Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, 
+      "Coral Laser Can Error", "Coral LaserCAN Initialization Error"));
+    }
     try {
       mLaserCAN.setRangingMode(LaserCan.RangingMode.SHORT);
       mLaserCAN.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
@@ -86,7 +92,12 @@ public class Coral extends SubsystemBase {
     }
 
     // Configure the Canandcolor (outake)
-    mCanandcolor = new Canandcolor(Constants.Coral.kColorId);
+    try{
+      mCanandcolor = new Canandcolor(Constants.Coral.kColorId);
+    } catch (Exception e){
+      Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, 
+      "Coral CANANDColor Error", "Coral CANANDColor Initialization Error"));
+    }
   }
 
   private static class PeriodicIO {
@@ -151,11 +162,23 @@ public class Coral extends SubsystemBase {
   /*---------------------------------- Custom Public Functions ----------------------------------*/
 
   private boolean isHoldingCoralViaLaserCAN() {
-    return mPeriodicIO.measurement.distance_mm < 75.0;
+    try {
+      return mPeriodicIO.measurement.distance_mm < 75.0;
+    } catch(Exception e){
+      Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, 
+      "Coral Laser Can Error", "Coral LaserCAN Read Error"));
+      return false;
+    }
   }
 
   private boolean isHoldingCoralViaCanandColor() {
-    return mCanandcolor.getProximity() < 0.05; // Experimentally determined on 2025-02-08
+    try {
+      return mCanandcolor.getProximity() < 0.05; // Experimentally determined on 2025-02-08
+    } catch(Exception e){
+      Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, 
+      "Coral CANANDColor Error", "Coral CANANDColor Read Error"));
+      return false;
+    }
   }
 
   private void setSpeed(double rpm) {

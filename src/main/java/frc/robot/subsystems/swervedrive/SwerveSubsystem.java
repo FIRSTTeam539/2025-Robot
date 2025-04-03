@@ -58,6 +58,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.utils.Elastic;
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -78,7 +79,8 @@ public class SwerveSubsystem extends SubsystemBase
   private final NetworkTable limelightNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
   
   boolean doRejectUpdate;
-  LaserCan mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
+  LaserCan mLaserCAN;
+
 
   /**
    * PhotonVision class to keep an accurate odometry.
@@ -105,6 +107,14 @@ public class SwerveSubsystem extends SubsystemBase
     } catch (Exception e)
     {
       throw new RuntimeException(e);
+    }
+    try
+    {
+      mLaserCAN = new LaserCan(DriveConstants.kDistLaserId);
+    } catch(Exception e) {
+      Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, 
+      "Drive Laser Can Error", "Auto Aim LaserCAN Error"));
+
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
@@ -174,16 +184,21 @@ try {
       
         doRejectUpdate = true;
       } // TODO: Fix
-      if(mt2.tagCount == 0)
-      {
-        doRejectUpdate = true;
-      }
-      if(!doRejectUpdate)
-      {
-        swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(LimelightConstants.XStDevs,LimelightConstants.YStDevs,9999999));
-        swerveDrive.addVisionMeasurement(
-            mt2.pose,
-            mt2.timestampSeconds);
+      try{
+        if(mt2.tagCount == 0)
+        {
+          doRejectUpdate = true;
+        }
+        if(!doRejectUpdate)
+        {
+          swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(LimelightConstants.XStDevs,LimelightConstants.YStDevs,9999999));
+          swerveDrive.addVisionMeasurement(
+              mt2.pose,
+              mt2.timestampSeconds);
+        }
+      } catch (Exception e){
+        Elastic.sendNotification(new Elastic.Notification(Elastic.Notification.NotificationLevel.ERROR, 
+        "Limelight Error", "Limelight Error"));
       }
 //      vision.updatePoseEstimation(swerveDrive);
     }

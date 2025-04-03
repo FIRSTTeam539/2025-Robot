@@ -29,7 +29,7 @@ public class LEDs extends SubsystemBase {
     private final static int kLED_COLUMNS = 4;
     private final static int kLED_ROWS = 2;
     private final static int kSTRIP_START = kLED_COLUMNS * kLED_ROWS;
-    private final static int kSTRIP_LENGTH = 75;
+    private final static int kSTRIP_LENGTH = 1000;
     private final static int kLED_TOTAL = kLED_COLUMNS * kLED_ROWS + kSTRIP_LENGTH;
 
     private boolean m_isPanelDisabled = false;
@@ -49,7 +49,7 @@ public class LEDs extends SubsystemBase {
         this.elevator = elevator;
         CANdleConfiguration configALL = new CANdleConfiguration();
         configALL.disableWhenLOS = false;
-        configALL.stripType = LEDStripType.BRG;
+        configALL.stripType = LEDStripType.GRB;
         configALL.brightnessScalar = 0.5; // dim the LEDs to half brightness
         // configALL.vBatOutputMode = VBatOutputMode.Modulated;
         m_candle.configAllSettings(configALL, 100);
